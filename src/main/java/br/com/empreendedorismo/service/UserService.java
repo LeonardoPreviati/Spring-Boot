@@ -37,6 +37,7 @@ public class UserService extends HibernateConfiguration {
 		usuario.setEmail(userDTO.getEmail());
 		usuario.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
 		usuario.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
+		//Save Entity Account
 		Account account = new Account();
 		account.setId(userDTO.getEmail());
 		account.setAge(accountDTO.getAge());
