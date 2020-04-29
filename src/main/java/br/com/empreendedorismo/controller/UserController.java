@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import br.com.empreendedorismo.dto.AccountDTO;
+
+import br.com.empreendedorismo.dto.UserAccountDTO;
 import br.com.empreendedorismo.dto.UserDTO;
 import br.com.empreendedorismo.entity.Usuario;
 import br.com.empreendedorismo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.implementation.bytecode.Throw;
 
 @RestController
 @RequestMapping("/user")
@@ -32,9 +32,6 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-	
-	@Autowired
-	private AccountController accountController; 
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
@@ -56,62 +53,76 @@ public class UserController {
 	@GetMapping("{id}")
 	public ResponseEntity<Usuario> findById(@PathVariable Integer id){
 		long startTime = System.currentTimeMillis();
-		log.info("UserController.findById() - BEGIN");
+		log.info("UserController.findById(@PathVariable Integer id) - BEGIN");
 		ResponseEntity<Usuario> user = null;
 		try {
-			if (userService.findActive(id,null).equals(true)) {
-				user = ResponseEntity.ok(userService.findById(id));
-			}else {
-				user = new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
-			}
+			user = ResponseEntity.ok(userService.findById(id));
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
+			user = new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
 		}
 		long endTime = System.currentTimeMillis() - startTime;
-		log.info("UserController.findById() - END (" + endTime + "ms)");
+		log.info("UserController.findById(@PathVariable Integer id) - END (" + endTime + "ms)");
 		return user;
 		
 	}
 	
-	//Salva um usuário
 	@PostMapping
-	public ResponseEntity<Usuario> save(@RequestBody @Valid UserDTO userDTO, @Valid AccountDTO accountDTO) throws Exception {
+	public ResponseEntity<Usuario> save(@RequestBody @Valid UserAccountDTO userAccountDTO) throws Exception {
 		long startTime = System.currentTimeMillis();
-		log.info("UserController.save(@RequestBody @Valid UserDTO userDTO, @Valid AccountDTO accountDTO) - BEGIN");
-		ResponseEntity<Usuario> ret = null;
+		log.info("UserController.save(@RequestBody @Valid UserAccountDTO userAccountDTO) - BEGIN");
+		ResponseEntity<Usuario> user = null;
+		
 		try {
-			if (userService.findActive(null,userDTO.getEmail()).equals(false)) {
-				userService.save(userDTO, accountDTO);
-				ret = new ResponseEntity<Usuario>(HttpStatus.CREATED);
+			if (userService.findByExists(null,userAccountDTO.getEmail()).equals(false)) {
+				userService.save(userAccountDTO);
+				user = new ResponseEntity<Usuario>(HttpStatus.CREATED);
 			}else {
-				ret = new ResponseEntity<Usuario>(HttpStatus.CONFLICT);
+				user = new ResponseEntity<Usuario>(HttpStatus.CONFLICT);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 		long endTime = System.currentTimeMillis() - startTime;
-		log.info("UserController.save(@RequestBody @Valid UserDTO userDTO, @Valid AccountDTO accountDTO) - END (" + endTime + "ms)");
-		return ret;
+		log.info("UserController.save(@RequestBody @Valid UserAccountDTO userAccountDTO) - END (" + endTime + "ms)");
+		return user;
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Usuario update(@PathVariable Integer id, @RequestBody @Valid UserDTO dto){
-		if(findById(id) != null) {
-			return userService.update(id, dto);
+	public Usuario update(@PathVariable Integer id, @RequestBody @Valid UserDTO userDTO){
+		long startTime = System.currentTimeMillis();
+		log.info("UserController.update(@PathVariable Integer id, @RequestBody @Valid UserDTO dto) - BEGIN");
+		Usuario user = null;
+		try {
+			if(findById(id) != null) {
+				user = userService.update(id, userDTO);
+			}else {
+				user = (Usuario) ResponseEntity.notFound();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
-		return (Usuario) ResponseEntity.notFound();
+		long endTime = System.currentTimeMillis() - startTime;
+		log.info("UserController.update(@PathVariable Integer id, @RequestBody @Valid UserDTO dto) - END (" + endTime + "ms)");
+		return user;
 	}
 	
 	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteById(@PathVariable Integer id) {
-		userService.deleteById(id);
+	public ResponseEntity<?> deleteById(@PathVariable Integer id) {
+		long startTime = System.currentTimeMillis();
+		log.info("UserController.deleteById(@PathVariable Integer id) - BEGIN");
+		ResponseEntity<?> entity = null;
+		try {
+			entity = ResponseEntity.ok(userService.deleteById(id));
+		} catch (Exception e) {
+			entity = ResponseEntity.notFound().build();
+		}
+		long endTime = System.currentTimeMillis() - startTime;
+		log.info("UserController.deleteById(@PathVariable Integer id) - END (" + endTime + "ms)");
+		return entity;
+		
 	}
-	
-	
-
 }
