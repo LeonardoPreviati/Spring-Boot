@@ -14,9 +14,12 @@ import lombok.Data;
 @Table(name = "ACCOUNT")
 public class Account {
 	
-	@Id 
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ACCOUNT_ID")
-	private String id;
+	private Integer id;
+	
+	@Column(name = "USER_EMAIL", unique = true)
+	private String userEmail;
 	
 	@Column(name = "AGE")
 	private String age;
@@ -32,10 +35,4 @@ public class Account {
 	
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
-	
-	@Column(name = "INACTIVATE_DATE")
-	private Date inactivateDate;
-	
-	
-	
 }

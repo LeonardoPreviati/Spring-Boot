@@ -40,7 +40,7 @@ public class Usuario implements UserDetails {
 	@Column(name = "NAME")
 	private String name;
 	
-	@Column(name = "EMAIL")
+	@Column(name = "EMAIL", unique = true)
 	private String email;
 	
 	@JsonIgnore
@@ -53,10 +53,6 @@ public class Usuario implements UserDetails {
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
 	
-	
-	@Column(name = "INACTIVATE_DATE")
-	private Date inactivateDate;
-	
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Profile> profile = new ArrayList<>();
@@ -68,7 +64,6 @@ public class Usuario implements UserDetails {
 	}
 	
 	@OneToOne
-	@JsonIgnore
 	@JoinColumn(name = "ACCOUNT_ID")
 	private Account account;
 	

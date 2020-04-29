@@ -8,10 +8,12 @@ import java.util.Optional;
 import javax.persistence.Query;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import br.com.empreendedorismo.configuration.HibernateConfiguration;
-import br.com.empreendedorismo.dto.AccountDTO;
+import br.com.empreendedorismo.controller.AccountController;
+import br.com.empreendedorismo.dto.UserAccountDTO;
 import br.com.empreendedorismo.dto.UserDTO;
 import br.com.empreendedorismo.entity.Account;
 import br.com.empreendedorismo.entity.Usuario;
@@ -26,53 +28,79 @@ public class UserService extends HibernateConfiguration {
 	
 	@Autowired
 	private AccountRepository accountRepository;
+	
+	@Autowired
+	private AccountController accountController;
 
 	public List<Usuario> findAll() {
-		return userRepository.findAll();
-	}	
-	
-	public Usuario save(@Valid UserDTO userDTO, @Valid AccountDTO accountDTO) throws Exception {
-		Usuario usuario = new Usuario();
-		usuario.setName(userDTO.getName());
-		usuario.setEmail(userDTO.getEmail());
-		usuario.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
-		usuario.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
-		//Save Entity Account
-		Account account = new Account();
-		account.setId(userDTO.getEmail());
-		account.setAge(accountDTO.getAge());
-		account.setTelephone(accountDTO.getTelephone());
-		account.setCity(accountDTO.getCity());
-		account.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
-		usuario.setAccount(account);
-		accountRepository.save(account);
-		return userRepository.save(usuario);
-	}
-	
-	public Usuario update(Integer id, UserDTO userDTO) {
-		Usuario userModified = findById(id);
-		userModified.setName(userDTO.getName());
-		userModified.setEmail(userDTO.getEmail());
-		userModified.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
-		userModified.setLastUpdateDate(new Date(Calendar.getInstance().getTimeInMillis()));
-		return userRepository.save(userModified);
+		try {
+			return userRepository.findAll();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
 	public Usuario findById(Integer id) {
-		Optional<Usuario> optional = userRepository.findById(id);
-		return optional.get();
+		try {
+			Optional<Usuario> optional = userRepository.findById(id);
+			return optional.get();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
-	public void deleteById(Integer id) {
-		Usuario usuario = findById(id);
-		usuario.setInactivateDate(new Date(Calendar.getInstance().getTimeInMillis()));
+	public Usuario save(@Valid UserAccountDTO userAccountDTO) throws Exception {
+		Usuario user = null;
+		try {
+			Usuario usuario = new Usuario();
+			usuario.setName(userAccountDTO.getName());
+			usuario.setEmail(userAccountDTO.getEmail());
+			usuario.setPassword(new BCryptPasswordEncoder().encode(userAccountDTO.getPassword()));
+			usuario.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
+			Account account = accountController.save(userAccountDTO.getEmail(),userAccountDTO.getAge(),userAccountDTO.getTelephone(), userAccountDTO.getCity());
+			usuario.setAccount(account);
+			accountRepository.save(account);
+			return userRepository.save(usuario);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
-	public Boolean findActive(Integer id, String email) {
+	public Usuario update(Integer id, UserDTO userDTO) {
+		try {
+			Usuario userModified = findById(id);
+			userModified.setName(userDTO.getName());
+			userModified.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
+			userModified.setLastUpdateDate(new Date(Calendar.getInstance().getTimeInMillis()));
+			return userRepository.save(userModified);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	public ResponseEntity<?> deleteById(Integer id) {
+		ResponseEntity<?> entity = null;
+		try {
+			Integer accountId = findIdAccoutByUser(id);
+			userRepository.deleteById(id);
+			accountController.deleteById(accountId);
+			entity = ResponseEntity.ok().build();
+		} catch (Exception e) {
+			entity = ResponseEntity.notFound().build();
+		}return entity;
+	}
+	
+	public Boolean findByExists(Integer id, String email) {
 		boolean ret = false;
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT COUNT(*) FROM usuario WHERE (USER_ID = :user_id OR EMAIL = :email) AND INACTIVATE_DATE IS NULL");
+			sql.append("SELECT COUNT(*) ");
+			sql.append("FROM usuario ");
+			sql.append("WHERE (USER_ID = :user_id OR EMAIL = :email)");
 			Query q = entityManager().createNativeQuery(sql.toString());
 			q.setParameter("user_id", id);
 			q.setParameter("email", email);
@@ -80,7 +108,26 @@ public class UserService extends HibernateConfiguration {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
-		}
-		return ret;
+		}return ret;
+	}
+	
+	//Verify Account where email user and account identical
+	public Integer findIdAccoutByUser(Integer id) {
+		Integer ret = null;
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append(" SELECT ACC.ACCOUNT_ID 			    ");
+			sql.append(" FROM account ACC 				    ");
+			sql.append(" JOIN usuario USER 				    ");
+			sql.append(" 	ON USER.EMAIL = ACC.USER_EMAIL  ");
+			sql.append(" WHERE USER.USER_ID = :user_id 	    ");
+			org.hibernate.query.Query q = getSession().createSQLQuery(sql.toString());
+			q.setParameter("user_id", id);
+			ret = Integer.parseInt(q.uniqueResult().toString());
+			System.out.println(ret);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ret;
+		}return ret.intValue();
 	}
 }
