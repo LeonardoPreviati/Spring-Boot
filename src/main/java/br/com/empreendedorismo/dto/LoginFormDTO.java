@@ -1,11 +1,10 @@
 package br.com.empreendedorismo.dto;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
 import lombok.Data;
 
 @Data
-public class LoginForm {
+public class LoginFormDTO {
 
 	private String email;
 	private String password;

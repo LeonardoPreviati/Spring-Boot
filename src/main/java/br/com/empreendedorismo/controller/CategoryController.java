@@ -1,15 +1,7 @@
 package br.com.empreendedorismo.controller;
 
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
 import javax.validation.Valid;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import br.com.empreendedorismo.configuration.ModelMapperSecurityConfiguration;
 import br.com.empreendedorismo.dto.CategoryDTO;
 import br.com.empreendedorismo.entity.Category;
 import br.com.empreendedorismo.service.CategoryService;
@@ -36,6 +26,7 @@ public class CategoryController {
 	@Autowired
 	private CategoryService categoryService;
 	
+	@SuppressWarnings("unused")
 	@Autowired
 	private ModelMapper modelMapper;
 	

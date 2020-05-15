@@ -1,11 +1,9 @@
 package br.com.empreendedorismo.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import br.com.empreendedorismo.dto.AccountDTO;
-import br.com.empreendedorismo.dto.UserDTO;
 import br.com.empreendedorismo.entity.Account;
-import br.com.empreendedorismo.entity.Usuario;
 import br.com.empreendedorismo.respository.AccountRepository;
 import br.com.empreendedorismo.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,12 +30,14 @@ public class AccountController {
 	@Autowired
 	private AccountService accountService;
 	
+	@Autowired
+	private AccountRepository accountRepository;
+	
 	@GetMapping
-	@ResponseStatus(HttpStatus.OK)
-	public List<Account> findAll() throws Exception{
+	public ResponseEntity<List<Account>> findAll() throws Exception{
 		long startTime = System.currentTimeMillis();
 		log.info("AccountController.findAll() - BEGIN");
-		List<Account> listAccount = new ArrayList<Account>();
+		ResponseEntity<List<Account>> listAccount = null;
 		try {
 			listAccount = accountService.findAll();
 		}catch (Exception e) {
@@ -57,10 +54,16 @@ public class AccountController {
 		long startTime = System.currentTimeMillis();
 		log.info("AccountController.findById(@PathVariable Integer id) - BEGIN");
 		ResponseEntity<Account> user = null;
+		Optional<Account> optional = accountRepository.findById(id);
 		try {
-			user = ResponseEntity.ok(accountService.findById(id));
+			if (optional.isPresent()) {
+				user = ResponseEntity.ok().body(accountService.findById(id));
+			}else {
+				user = ResponseEntity.notFound().build();
+			}
 		} catch (Exception e) {
-			user = new ResponseEntity<Account>(HttpStatus.NOT_FOUND);
+			e.printStackTrace();
+			throw e;
 		}
 		long endTime = System.currentTimeMillis() - startTime;
 		log.info("AccountController.findById(@PathVariable Integer id) - END (" + endTime + "ms)");
@@ -83,18 +86,18 @@ public class AccountController {
 		return ret;
 	}
 	
-	@PutMapping("/{id}")
+	@PutMapping("{id}")
 	@Transactional
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Account update(@PathVariable Integer id, @RequestBody @Valid AccountDTO accountDTO){
+	public ResponseEntity<Account> update(@PathVariable Integer id, @RequestBody @Valid AccountDTO accountDTO){
 		long startTime = System.currentTimeMillis();
 		log.info("AccountController.update(@PathVariable Integer id, @RequestBody @Valid AccountDTO accountDTO) - BEGIN");
-		Account account = null;
+		ResponseEntity<Account> account = null;
 		try {
 			if(findById(id) != null) {
 				account = accountService.update(id, accountDTO);
 			}else {
-				account = (Account) ResponseEntity.notFound();
+				account = new ResponseEntity<Account>(HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -106,17 +109,18 @@ public class AccountController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteById(Integer id) {
+	public ResponseEntity<?> deleteById(@PathVariable Integer id) {
 		long startTime = System.currentTimeMillis();
-		log.info("AccountController.deleteById(Integer id) - BEGIN");
+		log.info("AccountController.deleteById(@PathVariable Integer id) - BEGIN");
 		ResponseEntity<?> entity = null;
 		try {
-			accountService.deleteById(id);
-			entity = ResponseEntity.ok().build();
+			entity = accountService.deleteById(id);
 		} catch (Exception e) {
-			entity = ResponseEntity.notFound().build();
-		}long endTime = System.currentTimeMillis() - startTime;
-		log.info("AccountController.deleteById(Integer id) - END (" + endTime + "ms)");
+			e.printStackTrace();
+			throw e;
+		}
+		long endTime = System.currentTimeMillis() - startTime;
+		log.info("AccountController.deleteById(@PathVariable Integer id) - END (" + endTime + "ms)");
 		return entity;
 		
 	}

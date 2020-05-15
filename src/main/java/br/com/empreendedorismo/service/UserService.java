@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.persistence.Query;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,10 @@ public class UserService extends HibernateConfiguration {
 	
 	@Autowired
 	private AccountRepository accountRepository;
-	
+
 	@Autowired
 	private AccountController accountController;
+	
 
 	public List<Usuario> findAll() {
 		try {
@@ -41,18 +43,17 @@ public class UserService extends HibernateConfiguration {
 		}
 	}
 	
-	public Usuario findById(Integer id) {
+	public ResponseEntity<Usuario> findById(Integer id) {
+		ResponseEntity<Usuario> userEntity = null;
 		try {
 			Optional<Usuario> optional = userRepository.findById(id);
-			return optional.get();
+			userEntity = ResponseEntity.ok().body(optional.get());
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
+			userEntity = new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+		}return userEntity;
 	}
 	
 	public Usuario save(@Valid UserAccountDTO userAccountDTO) throws Exception {
-		Usuario user = null;
 		try {
 			Usuario usuario = new Usuario();
 			usuario.setName(userAccountDTO.getName());
@@ -62,24 +63,33 @@ public class UserService extends HibernateConfiguration {
 			Account account = accountController.save(userAccountDTO.getEmail(),userAccountDTO.getAge(),userAccountDTO.getTelephone(), userAccountDTO.getCity());
 			usuario.setAccount(account);
 			accountRepository.save(account);
-			return userRepository.save(usuario);
+			userRepository.save(usuario);
+			return usuario;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
 	
-	public Usuario update(Integer id, UserDTO userDTO) {
+	public ResponseEntity<Usuario> update(Integer id, UserDTO userDTO) {
+		ResponseEntity<Usuario> userEntity = null;
 		try {
-			Usuario userModified = findById(id);
-			userModified.setName(userDTO.getName());
-			userModified.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
-			userModified.setLastUpdateDate(new Date(Calendar.getInstance().getTimeInMillis()));
-			return userRepository.save(userModified);
+			Optional<Usuario> userModified = userRepository.findById(id);
+			if (!userModified.equals(null)) {
+				userModified.get().setName(userDTO.getName());
+				userModified.get().setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
+				userModified.get().setLastUpdateDate(new Date(Calendar.getInstance().getTimeInMillis()));
+				userRepository.save(userModified);
+				userEntity = ResponseEntity.ok().build();
+				
+			}else {
+				userEntity = new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
-		}
+		}return userEntity;
 	}
 	
 	public ResponseEntity<?> deleteById(Integer id) {
@@ -98,9 +108,10 @@ public class UserService extends HibernateConfiguration {
 		boolean ret = false;
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT COUNT(*) ");
-			sql.append("FROM usuario ");
-			sql.append("WHERE (USER_ID = :user_id OR EMAIL = :email)");
+			sql.append(" SELECT COUNT(*) 			");
+			sql.append(" FROM usuario 				");
+			sql.append(" WHERE (USER_ID = :user_id  ");
+			sql.append("	OR EMAIL = :email) 		");
 			Query q = entityManager().createNativeQuery(sql.toString());
 			q.setParameter("user_id", id);
 			q.setParameter("email", email);
@@ -112,15 +123,16 @@ public class UserService extends HibernateConfiguration {
 	}
 	
 	//Verify Account where email user and account identical
+	@SuppressWarnings("rawtypes")
 	public Integer findIdAccoutByUser(Integer id) {
 		Integer ret = null;
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" SELECT ACC.ACCOUNT_ID 			    ");
-			sql.append(" FROM account ACC 				    ");
-			sql.append(" JOIN usuario USER 				    ");
-			sql.append(" 	ON USER.EMAIL = ACC.USER_EMAIL  ");
-			sql.append(" WHERE USER.USER_ID = :user_id 	    ");
+			sql.append(" SELECT ACC.ACCOUNT_ID 			   ");
+			sql.append(" FROM account ACC 				   ");
+			sql.append(" JOIN usuario USER 				   ");
+			sql.append(" 	ON USER.EMAIL = ACC.USER_EMAIL ");
+			sql.append(" WHERE USER.USER_ID = :user_id 	   ");
 			org.hibernate.query.Query q = getSession().createSQLQuery(sql.toString());
 			q.setParameter("user_id", id);
 			ret = Integer.parseInt(q.uniqueResult().toString());

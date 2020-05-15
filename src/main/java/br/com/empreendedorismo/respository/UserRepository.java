@@ -3,6 +3,7 @@ package br.com.empreendedorismo.respository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import br.com.empreendedorismo.entity.Usuario;
 
@@ -10,6 +11,8 @@ import br.com.empreendedorismo.entity.Usuario;
 public interface UserRepository extends JpaRepository<Usuario, Integer>{
 	
 	public Optional<Usuario> findByEmail(String email);
+
+	public ResponseEntity<Usuario> save(Optional<Usuario> userModified);
 	
 	
 }

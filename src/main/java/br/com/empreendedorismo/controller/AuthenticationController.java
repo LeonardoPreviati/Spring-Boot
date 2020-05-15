@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import br.com.empreendedorismo.dto.LoginForm;
+import br.com.empreendedorismo.dto.LoginFormDTO;
 import br.com.empreendedorismo.dto.TokenDTO;
 
 
@@ -28,8 +28,8 @@ public class AuthenticationController {
 	private TokenService tokenService;
 	
 	@PostMapping
-	public ResponseEntity<TokenDTO> authentication(@RequestBody @Valid LoginForm form){
-		UsernamePasswordAuthenticationToken dataLogin = form.convert();
+	public ResponseEntity<TokenDTO> authentication(@RequestBody @Valid LoginFormDTO loginFormDTO){
+		UsernamePasswordAuthenticationToken dataLogin = loginFormDTO.convert();
 		try {
 			Authentication authentication = authenticationManager.authenticate(dataLogin);
 			String token = tokenService.generateToken(authentication);

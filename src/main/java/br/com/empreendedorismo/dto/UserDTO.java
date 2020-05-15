@@ -1,9 +1,6 @@
 package br.com.empreendedorismo.dto;
 
 import javax.validation.constraints.NotBlank;
-
-import com.sun.istack.NotNull;
-
 import lombok.Data;
 
 @Data

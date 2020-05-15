@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.empreendedorismo.dto.UserCategoryDTO;
-import br.com.empreendedorismo.entity.Category;
-import br.com.empreendedorismo.service.CategoryService;
 import br.com.empreendedorismo.service.UserCategoryService;
 
 @RestController
@@ -23,6 +21,7 @@ public class UserCategoryController {
 	@Autowired
 	private UserCategoryService userCategoryService;
 	
+	@SuppressWarnings({ "unchecked", "rawtypes", "unlikely-arg-type" })
 	@GetMapping("/findAll")
 	@ResponseStatus(HttpStatus.OK)
 	public List<UserCategoryDTO> findAll() {
@@ -33,8 +32,5 @@ public class UserCategoryController {
 		}else {
 			return (List) new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
-		
 	}
-	
-	
 }

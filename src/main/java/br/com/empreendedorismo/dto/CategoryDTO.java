@@ -15,7 +15,5 @@ public class CategoryDTO {
 	private Integer parente_category_id;*/
 	
 
-	private Integer category_id;
-
 	private String description;
 }

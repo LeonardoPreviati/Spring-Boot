@@ -2,8 +2,6 @@ package br.com.empreendedorismo.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,14 +54,14 @@ public class UserController {
 		log.info("UserController.findById(@PathVariable Integer id) - BEGIN");
 		ResponseEntity<Usuario> user = null;
 		try {
-			user = ResponseEntity.ok(userService.findById(id));
+			user = userService.findById(id);
 		} catch (Exception e) {
-			user = new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+			e.printStackTrace();
+			throw e;
 		}
 		long endTime = System.currentTimeMillis() - startTime;
 		log.info("UserController.findById(@PathVariable Integer id) - END (" + endTime + "ms)");
 		return user;
-		
 	}
 	
 	@PostMapping
@@ -91,15 +89,15 @@ public class UserController {
 	@PutMapping("/{id}")
 	@Transactional
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Usuario update(@PathVariable Integer id, @RequestBody @Valid UserDTO userDTO){
+	public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody @Valid UserDTO userDTO){
 		long startTime = System.currentTimeMillis();
 		log.info("UserController.update(@PathVariable Integer id, @RequestBody @Valid UserDTO dto) - BEGIN");
-		Usuario user = null;
+		ResponseEntity<Usuario> user = null;
 		try {
 			if(findById(id) != null) {
 				user = userService.update(id, userDTO);
 			}else {
-				user = (Usuario) ResponseEntity.notFound();
+				user = new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

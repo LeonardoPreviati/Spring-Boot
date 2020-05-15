@@ -2,6 +2,7 @@ package br.com.empreendedorismo.service;
 
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
+
+
 public class TokenService {
 	
 	@Value("${ApiEmpreendedorismo.jwt.expiration}")
@@ -28,8 +31,9 @@ public class TokenService {
 				.setSubject(logged.getId().toString())
 				.setIssuedAt(date)
 				.setExpiration(dateExpiration)
-				.signWith(SignatureAlgorithm.HS256, secret)
-				.compact();				
+				.signWith(SignatureAlgorithm.HS256, secret)//algoritmo assimétrico e usa um par de chaves pública / 
+				.compact();								   //privada: o provedor de identidade possui uma chave privada (secreta) 
+														   //usada para gerar a assinatura e o consumidor do JWT recebe uma chave pública para validar a assinatura.
 	}
 
 	public boolean isValidToken(String token) {
