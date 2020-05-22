@@ -51,6 +51,7 @@ public class Usuario implements UserDetails {
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Profile> profile = new ArrayList<>();
 	
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "ACCOUNT_ID")
 	private Account account;

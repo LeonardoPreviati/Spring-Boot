@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import br.com.empreendedorismo.service.TokenService;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import br.com.empreendedorismo.dto.TokenDTO;
 
 @RestController
 @RequestMapping("/auth")
+@Slf4j
 public class AuthenticationController {
 	
 	@Autowired
@@ -29,12 +31,13 @@ public class AuthenticationController {
 	@Autowired
 	private TokenService tokenService;
 	
-	@GetMapping
+	@PostMapping
 	public ResponseEntity<TokenDTO> authentication(@RequestBody @Valid LoginFormDTO loginFormDTO){
 		UsernamePasswordAuthenticationToken dataLogin = loginFormDTO.convert();
 		try {
 			Authentication authentication = authenticationManager.authenticate(dataLogin);
 			String token = tokenService.generateToken(authentication);
+			log.info("O usuario " + dataLogin.getName() + " entrou no sistema.");
 			return ResponseEntity.ok(new TokenDTO(token,"Bearer"));
 		} catch (org.springframework.security.core.AuthenticationException e) {
 			return ResponseEntity.badRequest().build();

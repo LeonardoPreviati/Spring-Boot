@@ -46,35 +46,36 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter{
 		return super.authenticationManager();
 	}
 	
-	//Configurações de Autenticação
+	//Authentication Settings
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(authenticationSecurity).passwordEncoder(new BCryptPasswordEncoder());
 	}
 	
-	//Configurações de Autorização
+	//Settings Authorization
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 		.antMatchers(HttpMethod.POST, "/user").permitAll()
-		.antMatchers(HttpMethod.GET, "/auth").permitAll()
+		.antMatchers(HttpMethod.POST, "/auth").permitAll()
 		.antMatchers(HttpMethod.POST, "/created").permitAll()
 		.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 		.antMatchers(HttpMethod.GET, "/category/findById/*").permitAll()
 		.antMatchers(HttpMethod.POST,"/category/created").permitAll()
 		.antMatchers(HttpMethod.DELETE,"/category/deleteById/*").permitAll()
-		.antMatchers(HttpMethod.GET, "/user/*").permitAll()
+		//above endpoints, can be accessed without authentication via token
 		.anyRequest().authenticated()
-		//csrf() tipo de ataque hacker
+		//to access the rest of the requests, you will need to be authenticated to the system
+		.and().cors()
+		//enable cors to integrate with the front
 		.and().csrf().disable()
-		//Não é para criar sessão, pois vamos usar token, para cada autenticação
+		//disable one type of hacker attack
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        //It is not to create session, because we will use token, for each authentication
         .and().addFilterBefore(new AuthenticationByTokenFilterSecurity(tokenService, userRepository), UsernamePasswordAuthenticationFilter.class);
-		
-		
 	}
 	
-	//Configurações de Recursos Estáticos(js, css, imagens, etc...)
+	//Static Resource Settings(js, css, imagens, etc...)
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		

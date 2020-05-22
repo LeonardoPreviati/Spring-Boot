@@ -11,10 +11,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import br.com.empreendedorismo.controller.UserController;
 import br.com.empreendedorismo.entity.Usuario;
 import br.com.empreendedorismo.respository.UserRepository;
 import br.com.empreendedorismo.service.TokenService;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AuthenticationByTokenFilterSecurity extends OncePerRequestFilter{
 
 	private TokenService tokenService;
@@ -43,6 +46,7 @@ public class AuthenticationByTokenFilterSecurity extends OncePerRequestFilter{
 		Usuario usuario = userRepository.findById(userId).get();
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
 	}
 
 	private String retrieveToken(HttpServletRequest request) {
