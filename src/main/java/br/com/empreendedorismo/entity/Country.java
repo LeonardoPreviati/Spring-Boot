@@ -1,32 +1,34 @@
 package br.com.empreendedorismo.entity;
 
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "CITY")
-public class City {
+@Table(name="COUNTRY")
+public class Country {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "CITY_ID")
+	@Column(name = "COUNTRY_ID")
 	private Integer id;
 	
 	@Column(name = "NAME")
 	private String name;
 	
-	@Column(name = "UF")
-	private String uf;
-	
-	@ManyToOne
-	private State state;
+	@OneToMany(mappedBy = "country")
+	private List<State> state;
 	
 	@Column(name = "CREATION_DATE")
 	private Date creationDate;

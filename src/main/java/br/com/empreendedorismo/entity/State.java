@@ -7,31 +7,33 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "CITY")
-public class City {
+@Table(name="STATE")
+public class State {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "CITY_ID")
+	@Column(name = "STATE_ID")
 	private Integer id;
 	
 	@Column(name = "NAME")
 	private String name;
 	
-	@Column(name = "UF")
-	private String uf;
+	@OneToMany(mappedBy = "state")
+	private List<City> city;
 	
 	@ManyToOne
-	private State state;
+	private Country country;
 	
 	@Column(name = "CREATION_DATE")
 	private Date creationDate;
 	
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
-
+	
 }

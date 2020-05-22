@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/discover_profile?autoReconnect=true&useSSL=true&createDatabaseIfNotExists=true
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/mysql?autoReconnect=true&useSSL=true&createDatabaseIfNotExists=true
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASS:root}
 

@@ -1,5 +1,6 @@
 package br.com.empreendedorismo.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +53,12 @@ public class Quest {
 	@Fetch(FetchMode.JOIN)
 	@JoinTable(name = "QUEST_ANSWER", joinColumns = { @JoinColumn(name = "QUEST_ID"), }, inverseJoinColumns = { @JoinColumn(name = "ANSWER_ID"), })
 	private Set<Answer> answer;
+	
+	@Column(name = "CREATION_DATE")
+	private Date creationDate;
+	
+	@Column(name = "LAST_UPDATE_DATE")
+	private Date lastUpdateDate;
 	
 	
 

@@ -3,7 +3,9 @@ package br.com.empreendedorismo.service;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import br.com.empreendedorismo.entity.Usuario;
@@ -12,14 +14,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
-
-
+@Component
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix = "security")
 public class TokenService {
 	
-	@Value("${ApiEmpreendedorismo.jwt.expiration}")
+	@Value("${security.jwt.token.expire-length}")
 	private String expiration;
 	
-	@Value("${ApiEmpreendedorismo.jwt.secret}")
+	@Value("${security.jwt.token.secret-key}")
 	private String secret;
 
 	public String generateToken(Authentication authentication) {
