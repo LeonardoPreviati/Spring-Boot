@@ -53,14 +53,14 @@ public class UserService extends HibernateConfiguration {
 		}return userEntity;
 	}
 	
-	public Usuario save(@Valid UserAccountDTO userAccountDTO) throws Exception {
+	public Usuario save(UserAccountDTO userAccountDTO) throws Exception {
 		try {
 			Usuario usuario = new Usuario();
 			usuario.setName(userAccountDTO.getName());
 			usuario.setEmail(userAccountDTO.getEmail());
 			usuario.setPassword(new BCryptPasswordEncoder().encode(userAccountDTO.getPassword()));
 			usuario.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
-			Account account = accountController.save(userAccountDTO.getEmail(),userAccountDTO.getAge(),userAccountDTO.getTelephone(), userAccountDTO.getCity());
+			Account account = accountController.save(userAccountDTO.getEmail(),userAccountDTO.getPostalCode(), userAccountDTO.getPublicPlace(), userAccountDTO.getNeighborhood(), userAccountDTO.getComplement(), userAccountDTO.getLocale(), userAccountDTO.getUf(), userAccountDTO.getDateOfBirth(), userAccountDTO.getTelephone());
 			usuario.setAccount(account);
 			accountRepository.save(account);
 			userRepository.save(usuario);

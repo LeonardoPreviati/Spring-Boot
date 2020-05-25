@@ -1,5 +1,6 @@
 package br.com.empreendedorismo.controller;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -71,12 +72,12 @@ public class AccountController {
 	}
 	
 	@PostMapping
-	public Account save(String email, String age, String telephone, String city) throws Exception {
+	public Account save(String email, String postalCode, String publicPlace, String neighborhood, String complement, String locale, String uf, Date dateOfBirth, String telephone) throws Exception {
 		long startTime = System.currentTimeMillis();
 		log.info("AccountController.save(String email, String age, String telephone, String city) - BEGIN");
 		Account ret = null;
 		try {
-			ret = accountService.save(email, age, telephone, city);
+			ret = accountService.save(email, postalCode, publicPlace, neighborhood, complement, locale, uf, dateOfBirth, telephone);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

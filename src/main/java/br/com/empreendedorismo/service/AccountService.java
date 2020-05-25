@@ -59,13 +59,18 @@ public class AccountService {
 		}return entityAccount;
 	}
 	
-	public Account save(String email, String age, String telephone, String city)  {
+	public Account save(String email, String postalCode, String publicPlace, String neighborhood, String complement, String locale, String uf, Date dateOfBirth, String telephone)  {
 		try {
 			Account account = new Account();
-			account.setUserEmail(email);
-			account.setAge(age);
+			account.setEmail(email);
+			account.setPostalCode(postalCode);
+			account.setPublicPlace(publicPlace);
+			account.setNeighborhood(neighborhood);
+			account.setComplement(complement);
+			account.setLocale(locale);
+			account.setUf(uf);
+			account.setDateOfBirth(dateOfBirth);
 			account.setTelephone(telephone);
-			account.setCity(city);
 			account.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
 			return account;
 		} catch (Exception e) {
@@ -79,16 +84,20 @@ public class AccountService {
 		try {
 			Account accountModified = accountService.findById(id);
 			if (!accountModified.equals(null)) {
-				accountModified.setAge(accountDTO.getAge());
+				accountModified.setPostalCode(accountDTO.getPostalCode());
+				accountModified.setPublicPlace(accountDTO.getPublicPlace());
+				accountModified.setNeighborhood(accountDTO.getNeighborhood());
+				accountModified.setComplement(accountDTO.getComplement());
+				accountModified.setLocale(accountDTO.getLocale());
+				accountModified.setUf(accountDTO.getUf());
+				accountModified.setDateOfBirth(accountDTO.getDateOfBirth());
 				accountModified.setTelephone(accountDTO.getTelephone());
-				accountModified.setCity(accountDTO.getCity());
 				accountModified.setLastUpdateDate(new Date(Calendar.getInstance().getTimeInMillis()));
 				accountRepository.save(accountModified);
 				account = ResponseEntity.ok().build();
 			}else {
 				account = ResponseEntity.notFound().build();
 			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

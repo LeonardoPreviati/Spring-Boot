@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -30,17 +31,32 @@ public class Account {
 	@Column(name = "ACCOUNT_ID")
 	private Integer id;
 	
-	@Column(name = "USER_EMAIL", unique = true)
-	private String userEmail;
+	@JoinColumn(name = "EMAIL", unique = true)
+	private String email;
 	
-	@Column(name = "AGE")
-	private String age;
+	@Column(name = "POSTAL_CODE")
+	private String postalCode;
 	
-	@Column(name = "TELEPHONE")
+	@Column(name = "PUBLIC_PLACE")
+	private String publicPlace;
+	
+	@Column(name = "NEIGHBORHOOD")
+	private String neighborhood;
+	
+	@Column(name = "COMPLEMENT")
+	private String complement;
+	
+	@Column(name = "LOCALE")
+	private String locale;
+	
+	@Column(name = "UF")
+	private String uf;
+	
+	@Column(name = "DATE_OF_BIRTH")
+	private Date dateOfBirth;
+	
+	@Column(name = "TELEPHONE", unique = true)
 	private String telephone;
-	
-	@Column(name = "CITY")
-	private String city;
 	
 	@OneToMany(mappedBy = "account")
 	private List<QuizFinished> quizFinished;
@@ -55,29 +71,26 @@ public class Account {
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
 	
-	//@JsonManagedReference
-	/* Anotação usada para indicar que a propriedade anotada 
-	 * faz parte da ligação bidirecional entre os campos; e que seu papel é o 
-	 * link "pai" (ou "encaminhamento"). O tipo de valor (classe) da propriedade 
-	 * deve ter uma única propriedade compatível anotada com JsonBackReference. 
-	 * A ligação é manipulada de modo que a propriedade anotada com esta anotação 
-	 * seja manipulada normalmente (serializada normalmente, sem tratamento especial 
-	 * para desserialização); é a referência anterior correspondente que requer tratamento especial.
-	 */
-	
-	
 	public Account() {
 		super();
 	}
 
-	public Account(Integer id, String userEmail, String age, String telephone, String city, Date creationDate,
-			Date lastUpdateDate) {
+	public Account(Integer id, String email, String postalCode, String publicPlace, String neighborhood,
+			String complement, String locale, String uf, Date dateOfBirth, String telephone,
+			List<QuizFinished> quizFinished, List<QuizResults> quizResults, Date creationDate, Date lastUpdateDate) {
 		super();
 		this.id = id;
-		this.userEmail = userEmail;
-		this.age = age;
+		this.email = email;
+		this.postalCode = postalCode;
+		this.publicPlace = publicPlace;
+		this.neighborhood = neighborhood;
+		this.complement = complement;
+		this.locale = locale;
+		this.uf = uf;
+		this.dateOfBirth = dateOfBirth;
 		this.telephone = telephone;
-		this.city = city;
+		this.quizFinished = quizFinished;
+		this.quizResults = quizResults;
 		this.creationDate = creationDate;
 		this.lastUpdateDate = lastUpdateDate;
 	}
@@ -91,20 +104,25 @@ public class Account {
 		if (getClass() != obj.getClass())
 			return false;
 		Account other = (Account) obj;
-		if (age == null) {
-			if (other.age != null)
+		if (complement == null) {
+			if (other.complement != null)
 				return false;
-		} else if (!age.equals(other.age))
-			return false;
-		if (city == null) {
-			if (other.city != null)
-				return false;
-		} else if (!city.equals(other.city))
+		} else if (!complement.equals(other.complement))
 			return false;
 		if (creationDate == null) {
 			if (other.creationDate != null)
 				return false;
 		} else if (!creationDate.equals(other.creationDate))
+			return false;
+		if (dateOfBirth == null) {
+			if (other.dateOfBirth != null)
+				return false;
+		} else if (!dateOfBirth.equals(other.dateOfBirth))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -116,15 +134,45 @@ public class Account {
 				return false;
 		} else if (!lastUpdateDate.equals(other.lastUpdateDate))
 			return false;
+		if (locale == null) {
+			if (other.locale != null)
+				return false;
+		} else if (!locale.equals(other.locale))
+			return false;
+		if (neighborhood == null) {
+			if (other.neighborhood != null)
+				return false;
+		} else if (!neighborhood.equals(other.neighborhood))
+			return false;
+		if (postalCode == null) {
+			if (other.postalCode != null)
+				return false;
+		} else if (!postalCode.equals(other.postalCode))
+			return false;
+		if (publicPlace == null) {
+			if (other.publicPlace != null)
+				return false;
+		} else if (!publicPlace.equals(other.publicPlace))
+			return false;
+		if (quizFinished == null) {
+			if (other.quizFinished != null)
+				return false;
+		} else if (!quizFinished.equals(other.quizFinished))
+			return false;
+		if (quizResults == null) {
+			if (other.quizResults != null)
+				return false;
+		} else if (!quizResults.equals(other.quizResults))
+			return false;
 		if (telephone == null) {
 			if (other.telephone != null)
 				return false;
 		} else if (!telephone.equals(other.telephone))
 			return false;
-		if (userEmail == null) {
-			if (other.userEmail != null)
+		if (uf == null) {
+			if (other.uf != null)
 				return false;
-		} else if (!userEmail.equals(other.userEmail))
+		} else if (!uf.equals(other.uf))
 			return false;
 		return true;
 	}
@@ -133,15 +181,27 @@ public class Account {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((age == null) ? 0 : age.hashCode());
-		result = prime * result + ((city == null) ? 0 : city.hashCode());
+		result = prime * result + ((complement == null) ? 0 : complement.hashCode());
 		result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
+		result = prime * result + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((lastUpdateDate == null) ? 0 : lastUpdateDate.hashCode());
+		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
+		result = prime * result + ((neighborhood == null) ? 0 : neighborhood.hashCode());
+		result = prime * result + ((postalCode == null) ? 0 : postalCode.hashCode());
+		result = prime * result + ((publicPlace == null) ? 0 : publicPlace.hashCode());
+		result = prime * result + ((quizFinished == null) ? 0 : quizFinished.hashCode());
+		result = prime * result + ((quizResults == null) ? 0 : quizResults.hashCode());
 		result = prime * result + ((telephone == null) ? 0 : telephone.hashCode());
-		result = prime * result + ((userEmail == null) ? 0 : userEmail.hashCode());
+		result = prime * result + ((uf == null) ? 0 : uf.hashCode());
 		return result;
 	}
+	
+	
+	
+	
+	
 	
 	
 }

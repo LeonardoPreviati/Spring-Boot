@@ -37,7 +37,7 @@ public class AuthenticationController {
 		try {
 			Authentication authentication = authenticationManager.authenticate(dataLogin);
 			String token = tokenService.generateToken(authentication);
-			log.info("O usuario " + dataLogin.getName() + " entrou no sistema.");
+			log.info("O usuario '" + dataLogin.getName() + "' entrou no sistema.");
 			return ResponseEntity.ok(new TokenDTO(token,"Bearer"));
 		} catch (org.springframework.security.core.AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
