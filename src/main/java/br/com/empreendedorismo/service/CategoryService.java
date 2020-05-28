@@ -53,9 +53,8 @@ public class CategoryService extends HibernateConfiguration{
 	
 	public List<HashMap<String, Object>> findAll() {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT 	c.category_id, c.user_id FROM user_category c ");
-		Query q = getSession().createSQLQuery(sql.toString()).
-				setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		sql.append("SELECT account_id,quest_id,category_id FROM quiz_results c order by quest_id asc");
+		Query q = getSession().createSQLQuery(sql.toString()).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		return q.getResultList();
 	}
 		

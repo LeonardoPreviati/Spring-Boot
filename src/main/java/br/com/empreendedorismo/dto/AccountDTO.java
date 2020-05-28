@@ -8,31 +8,28 @@ import lombok.Data;
 @Data
 public class AccountDTO {
 	
-	private String postalCode;
-	private String publicPlace;
+	private String zipCode;
 	private String neighborhood;
-	private String complement;
-	private String locale;
+	private String city;
 	private String uf;
 	private Date dateOfBirth;
-	private String telephone;
+	private String phone;
 	
 	public AccountDTO() {
 		super();
 	}
-	
-	public AccountDTO(String postalCode, String publicPlace, String neighborhood, String complement, String locale,
-			String uf, Date dateOfBirth, String telephone) {
+
+	public AccountDTO(String zipCode, String neighborhood, String city, String uf, Date dateOfBirth, String phone) {
 		super();
-		this.postalCode = postalCode;
-		this.publicPlace = publicPlace;
+		this.zipCode = zipCode;
 		this.neighborhood = neighborhood;
-		this.complement = complement;
-		this.locale = locale;
+		this.city = city;
 		this.uf = uf;
 		this.dateOfBirth = dateOfBirth;
-		this.telephone = telephone;
+		this.phone = phone;
 	}
+	
+	
 	
 	
 	

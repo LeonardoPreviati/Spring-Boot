@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Data
@@ -21,22 +24,27 @@ public class QuizResults {
 	@Column(name = "QUIZ_RESULTS_ID")
 	private Integer id;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "ACCOUNT_ID")
 	private Account account;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "QUIZ_ID")
 	private Quiz quiz;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "QUEST_ID")
 	private Quest quest;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "CATEGORY_ID")
 	private Category category;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "ANSWER_ID")
 	private Answer answer;

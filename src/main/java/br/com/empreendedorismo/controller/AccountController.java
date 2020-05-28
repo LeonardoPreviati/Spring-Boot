@@ -72,12 +72,12 @@ public class AccountController {
 	}
 	
 	@PostMapping
-	public Account save(String email, String postalCode, String publicPlace, String neighborhood, String complement, String locale, String uf, Date dateOfBirth, String telephone) throws Exception {
+	public Account save(String email, String zipCode, String neighborhood, String city, String uf, Date dateOfBirth, String phone) throws Exception {
 		long startTime = System.currentTimeMillis();
 		log.info("AccountController.save(String email, String age, String telephone, String city) - BEGIN");
 		Account ret = null;
 		try {
-			ret = accountService.save(email, postalCode, publicPlace, neighborhood, complement, locale, uf, dateOfBirth, telephone);
+			ret = accountService.save(email, zipCode, neighborhood, city, uf, dateOfBirth, phone);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

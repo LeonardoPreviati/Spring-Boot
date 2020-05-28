@@ -31,7 +31,7 @@ public class CategoryController {
 	private ModelMapper modelMapper;
 	
 	
-	@GetMapping("/findAll")
+	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<HashMap<String, Object>> findAll() {
 		return categoryService.findAll();

@@ -34,20 +34,14 @@ public class Account {
 	@JoinColumn(name = "EMAIL", unique = true)
 	private String email;
 	
-	@Column(name = "POSTAL_CODE")
-	private String postalCode;
-	
-	@Column(name = "PUBLIC_PLACE")
-	private String publicPlace;
+	@Column(name = "ZIP_CODE")
+	private String zipCode;
 	
 	@Column(name = "NEIGHBORHOOD")
 	private String neighborhood;
 	
-	@Column(name = "COMPLEMENT")
-	private String complement;
-	
-	@Column(name = "LOCALE")
-	private String locale;
+	@Column(name = "CITY")
+	private String city;
 	
 	@Column(name = "UF")
 	private String uf;
@@ -55,8 +49,8 @@ public class Account {
 	@Column(name = "DATE_OF_BIRTH")
 	private Date dateOfBirth;
 	
-	@Column(name = "TELEPHONE", unique = true)
-	private String telephone;
+	@Column(name = "PHONE", unique = true)
+	private String phone;
 	
 	@OneToMany(mappedBy = "account")
 	private List<QuizFinished> quizFinished;
@@ -75,20 +69,18 @@ public class Account {
 		super();
 	}
 
-	public Account(Integer id, String email, String postalCode, String publicPlace, String neighborhood,
-			String complement, String locale, String uf, Date dateOfBirth, String telephone,
-			List<QuizFinished> quizFinished, List<QuizResults> quizResults, Date creationDate, Date lastUpdateDate) {
+	public Account(Integer id, String email, String zipCode, String neighborhood, String city, String uf,
+			Date dateOfBirth, String phone, List<QuizFinished> quizFinished, List<QuizResults> quizResults,
+			Date creationDate, Date lastUpdateDate) {
 		super();
 		this.id = id;
 		this.email = email;
-		this.postalCode = postalCode;
-		this.publicPlace = publicPlace;
+		this.zipCode = zipCode;
 		this.neighborhood = neighborhood;
-		this.complement = complement;
-		this.locale = locale;
+		this.city = city;
 		this.uf = uf;
 		this.dateOfBirth = dateOfBirth;
-		this.telephone = telephone;
+		this.phone = phone;
 		this.quizFinished = quizFinished;
 		this.quizResults = quizResults;
 		this.creationDate = creationDate;
@@ -104,10 +96,10 @@ public class Account {
 		if (getClass() != obj.getClass())
 			return false;
 		Account other = (Account) obj;
-		if (complement == null) {
-			if (other.complement != null)
+		if (city == null) {
+			if (other.city != null)
 				return false;
-		} else if (!complement.equals(other.complement))
+		} else if (!city.equals(other.city))
 			return false;
 		if (creationDate == null) {
 			if (other.creationDate != null)
@@ -134,25 +126,15 @@ public class Account {
 				return false;
 		} else if (!lastUpdateDate.equals(other.lastUpdateDate))
 			return false;
-		if (locale == null) {
-			if (other.locale != null)
-				return false;
-		} else if (!locale.equals(other.locale))
-			return false;
 		if (neighborhood == null) {
 			if (other.neighborhood != null)
 				return false;
 		} else if (!neighborhood.equals(other.neighborhood))
 			return false;
-		if (postalCode == null) {
-			if (other.postalCode != null)
+		if (phone == null) {
+			if (other.phone != null)
 				return false;
-		} else if (!postalCode.equals(other.postalCode))
-			return false;
-		if (publicPlace == null) {
-			if (other.publicPlace != null)
-				return false;
-		} else if (!publicPlace.equals(other.publicPlace))
+		} else if (!phone.equals(other.phone))
 			return false;
 		if (quizFinished == null) {
 			if (other.quizFinished != null)
@@ -164,15 +146,15 @@ public class Account {
 				return false;
 		} else if (!quizResults.equals(other.quizResults))
 			return false;
-		if (telephone == null) {
-			if (other.telephone != null)
-				return false;
-		} else if (!telephone.equals(other.telephone))
-			return false;
 		if (uf == null) {
 			if (other.uf != null)
 				return false;
 		} else if (!uf.equals(other.uf))
+			return false;
+		if (zipCode == null) {
+			if (other.zipCode != null)
+				return false;
+		} else if (!zipCode.equals(other.zipCode))
 			return false;
 		return true;
 	}
@@ -181,27 +163,18 @@ public class Account {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((complement == null) ? 0 : complement.hashCode());
+		result = prime * result + ((city == null) ? 0 : city.hashCode());
 		result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
 		result = prime * result + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((lastUpdateDate == null) ? 0 : lastUpdateDate.hashCode());
-		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
 		result = prime * result + ((neighborhood == null) ? 0 : neighborhood.hashCode());
-		result = prime * result + ((postalCode == null) ? 0 : postalCode.hashCode());
-		result = prime * result + ((publicPlace == null) ? 0 : publicPlace.hashCode());
+		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
 		result = prime * result + ((quizFinished == null) ? 0 : quizFinished.hashCode());
 		result = prime * result + ((quizResults == null) ? 0 : quizResults.hashCode());
-		result = prime * result + ((telephone == null) ? 0 : telephone.hashCode());
 		result = prime * result + ((uf == null) ? 0 : uf.hashCode());
+		result = prime * result + ((zipCode == null) ? 0 : zipCode.hashCode());
 		return result;
 	}
-	
-	
-	
-	
-	
-	
-	
 }

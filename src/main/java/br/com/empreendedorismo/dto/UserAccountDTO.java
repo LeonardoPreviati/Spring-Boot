@@ -17,18 +17,13 @@ public class UserAccountDTO {
 	@NotBlank(message = "Necessário inserir a senha!!!")
 	private String password;
 	
-	@NotBlank(message = "Necessário inserir o telefone do Usuário!!!")
-	private String telephone;
+	private String phone;
 	
-	private String postalCode;
-	
-	private String publicPlace;
+	private String zipCode;
 	
 	private String neighborhood;
 	
-	private String complement;
-	
-	private String locale;
+	private String city;
 	
 	private String uf;
 	
@@ -40,25 +35,17 @@ public class UserAccountDTO {
 
 	public UserAccountDTO(@NotBlank(message = "Necessário inserir o nome do usuário!!!") String name,
 			@NotBlank(message = "Necessário inserir um email válido") String email,
-			@NotBlank(message = "Necessário inserir a senha!!!") String password,
-			@NotBlank(message = "Necessário inserir o telefone do Usuário!!!") String telephone, String postalCode,
-			String publicPlace, String neighborhood, String complement, String locale, String uf, Date dateOfBirth) {
+			@NotBlank(message = "Necessário inserir a senha!!!") String password, String phone, String zipCode,
+			String neighborhood, String city, String uf, Date dateOfBirth) {
 		super();
 		this.name = name;
 		this.email = email;
 		this.password = password;
-		this.telephone = telephone;
-		this.postalCode = postalCode;
-		this.publicPlace = publicPlace;
+		this.phone = phone;
+		this.zipCode = zipCode;
 		this.neighborhood = neighborhood;
-		this.complement = complement;
-		this.locale = locale;
+		this.city = city;
 		this.uf = uf;
 		this.dateOfBirth = dateOfBirth;
 	}
-	
-	
-	
-
-
 }
