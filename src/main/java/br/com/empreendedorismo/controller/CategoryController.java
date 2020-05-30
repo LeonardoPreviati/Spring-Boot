@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import br.com.empreendedorismo.dto.CategoryDTO;
@@ -49,13 +50,10 @@ public class CategoryController {
 			return (List<Category>) new ResponseEntity(HttpStatus.NOT_FOUND);
 		}*/
 		
-	
-	
-	@GetMapping("/findById/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Category findById(@PathVariable String id){
+	@RequestMapping(value = "{categoryId}", method = RequestMethod.GET)
+	public Category findById(@PathVariable Integer categoryId){
 		try {
-			Category category = categoryService.findById(Integer.parseInt(id));
+			Category category = categoryService.findById(categoryId);
 			return category;
 		} catch (NumberFormatException e) {
 			throw new NumberFormatException("Entrada inválida");

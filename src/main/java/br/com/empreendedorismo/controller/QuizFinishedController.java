@@ -120,7 +120,7 @@ public class QuizFinishedController {
 		log.info("QuizFinishedController.findIdAccoutByEmail(Account email) - BEGIN");
 		Integer accountId = null;
 		try {
-			accountId = quizFinishedService.findIdAccoutByEmail(email);
+			accountId = quizFinishedService.findAccoutIdByEmail(email);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -135,7 +135,7 @@ public class QuizFinishedController {
 		log.info("QuizFinishedController.deleteById(@PathVariable Integer id) - BEGIN");
 		Integer quiz = null;
 		try {
-			quiz = quizFinishedService.findIdQuizByTitle(title);
+			quiz = quizFinishedService.findQuizIdByTitle(title);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

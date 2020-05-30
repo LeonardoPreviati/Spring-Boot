@@ -26,6 +26,9 @@ public class Category {
 	@Column(name = "CATEGORY_ID")
 	private Integer id;
 	
+	@Column(name = "COD_CATEGORY")
+	private String codCategory;
+	
 	@Column(name = "NAME")
 	private String name;
 	
@@ -48,5 +51,14 @@ public class Category {
 	
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
+
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", codCategory=" + codCategory + ", name=" + name + ", description=" + description
+				+ ", movieUrl=" + movieUrl + ", quest=" + quest + ", quizResults=" + quizResults + ", creationDate="
+				+ creationDate + ", lastUpdateDate=" + lastUpdateDate + "]";
+	}
+	
+	
 	
 }

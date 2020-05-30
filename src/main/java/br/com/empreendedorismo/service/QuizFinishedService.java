@@ -78,32 +78,22 @@ public class QuizFinishedService extends HibernateConfiguration{
 	}
 	
 	//Verify Account id by email
-	@SuppressWarnings("rawtypes")
-	public Integer findIdAccoutByEmail(String email) {
+	public Integer findAccoutIdByEmail(String email) {
 		try {
-			StringBuilder sql = new StringBuilder();
-			sql.append(" SELECT ACC.ACCOUNT_ID FROM account ACC	WHERE ACC.USER_EMAIL = :email ");
-			org.hibernate.query.Query q = getSession().createSQLQuery(sql.toString());
-			q.setParameter("email", email);
-			List query = q.list();
-			return !query.isEmpty() ? Integer.parseInt(q.uniqueResult().toString()) : 0;
-		} catch (Exception e) {
+			Integer accountId = quizFinishedRepository.findResultQueryByEmail(email);
+			return !accountId.toString().isEmpty() ? accountId : null;
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
 	
 	//Verify Quiz id by title
-	@SuppressWarnings("rawtypes")
-	public Integer findIdQuizByTitle(String title) {
+	public Integer findQuizIdByTitle(String title) {
 		try {
-			StringBuilder sql = new StringBuilder();
-			sql.append(" SELECT Q.QUIZ_ID FROM quiz Q WHERE Q.TITLE = :title ");
-			org.hibernate.query.Query q = getSession().createSQLQuery(sql.toString());
-			q.setParameter("title", title);
-			List query = q.list();
-			return !query.isEmpty() ? Integer.parseInt(q.uniqueResult().toString()) : 0;
-		} catch (Exception e) {
+			Integer quizId = quizFinishedRepository.findResultQueryByTitle(title);
+			return !quizId.toString().isEmpty() ? quizId : null;
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 			throw e;
 		}
