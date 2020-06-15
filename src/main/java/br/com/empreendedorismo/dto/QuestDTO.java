@@ -8,13 +8,16 @@ import lombok.Data;
 @Data
 public class QuestDTO {
 	
-	@NotBlank
-	private String description;
+	@NotBlank(message = "É necessário inserir a descrição da categoria que deseja alterar!!!")
+	private String questDescription;
 	
-	private Integer quizId;
+	@NotBlank(message = "Necessário inserir o id do quiz!!!")
+	private String quizTitle;
 	
-	private Integer categoryId;
+	@NotBlank(message = "Necessário inserir o id da categoria!!!")
+	private String codCategory;
 	
 	
-
+	
+	
 }

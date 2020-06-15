@@ -31,13 +31,17 @@ public class AuthenticationController {
 	@Autowired
 	private TokenService tokenService;
 	
+	@Autowired
+	private UserController userController;
+	
 	@PostMapping
 	public ResponseEntity<TokenDTO> authentication(@RequestBody @Valid LoginFormDTO loginFormDTO){
 		UsernamePasswordAuthenticationToken dataLogin = loginFormDTO.convert();
 		try {
 			Authentication authentication = authenticationManager.authenticate(dataLogin);
 			String token = tokenService.generateToken(authentication);
-			log.info("O usuario '" + dataLogin.getName() + "' entrou no sistema.");
+			String name =  userController.findUserNameByEmail(dataLogin.getName());
+			tokenService.sendEmail(name, dataLogin);
 			return ResponseEntity.ok(new TokenDTO(token,"Bearer"));
 		} catch (org.springframework.security.core.AuthenticationException e) {
 			return ResponseEntity.badRequest().build();

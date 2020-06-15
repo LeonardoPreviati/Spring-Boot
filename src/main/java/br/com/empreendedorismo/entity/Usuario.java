@@ -102,17 +102,13 @@ public class Usuario implements UserDetails {
 		super();
 	}
 	
-	public Usuario(Integer id, String name, String email, String password, Date creationDate, Date lastUpdateDate,
-			List<Profile> profile, Account account) {
+	public Usuario(String name, String email, String password, Date date) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
-		this.creationDate = creationDate;
-		this.lastUpdateDate = lastUpdateDate;
-		this.profile = profile;
-		this.account = account;
+		this.creationDate = date;
+		
 	}
 
 	@Override

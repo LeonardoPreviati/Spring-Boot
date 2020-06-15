@@ -9,7 +9,7 @@ public interface QuizFinishedRepository extends JpaRepository<QuizFinished, Inte
 	
 	@Query(value = " SELECT ACC.ACCOUNT_ID         "
 			+ 	   " FROM account ACC	           "
-			+ 	   " WHERE ACC.USER_EMAIL = :email ", nativeQuery = true)
+			+ 	   " WHERE ACC.EMAIL = :email ", nativeQuery = true)
 	public Integer findResultQueryByEmail (String email);
 	
 	@Query(value = " SELECT Q.QUIZ_ID      "

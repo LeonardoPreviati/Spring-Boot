@@ -32,6 +32,9 @@ public class Quest {
 	@Column(name = "QUEST_ID")
 	private Integer id;
 	
+	@Column(name = "COD_QUEST")
+	private String codQuest;
+	
 	@Column(name = "DESCRIPTION")
 	private String description;
 	
@@ -47,7 +50,7 @@ public class Quest {
 	@ManyToMany
 	@Fetch(FetchMode.JOIN)
 	@JoinTable(name = "QUEST_CATEGORY", joinColumns = { @JoinColumn(name = "QUEST_ID"), }, inverseJoinColumns = { @JoinColumn(name = "CATEGORY_ID"), })
-	private List<Category> category;
+	private Set<Category> category;
 	
 	@ManyToMany
 	@Fetch(FetchMode.JOIN)

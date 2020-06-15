@@ -9,7 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.SelectBeforeUpdate;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -17,7 +22,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "QUIZ_RESULTS")
+@Table(name = "QUIZ_RESULTS", uniqueConstraints = @UniqueConstraint( columnNames = {"QUEST_ID","CATEGORY_ID","ANSWER_ID"}))
 public class QuizResults {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) 

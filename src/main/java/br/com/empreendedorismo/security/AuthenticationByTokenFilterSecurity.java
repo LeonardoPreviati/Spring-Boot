@@ -41,7 +41,7 @@ public class AuthenticationByTokenFilterSecurity extends OncePerRequestFilter{
 		filterChain.doFilter(request, response);
 	}
 
-	private void userAuthenticate(String token) {
+	protected void userAuthenticate(String token) {
 		Integer userId = tokenService.getUserId(token);
 		Usuario usuario = userRepository.findById(userId).get();
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());

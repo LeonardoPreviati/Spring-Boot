@@ -1,12 +1,9 @@
 package br.com.empreendedorismo.service;
 
-import java.math.BigInteger;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.Query;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,23 +40,24 @@ public class UserService extends HibernateConfiguration {
 		}
 	}
 	
-	public ResponseEntity<Usuario> findById(Integer id) {
-		ResponseEntity<Usuario> userEntity = null;
+	public Usuario findById(Integer id) {
+		Usuario userEntity = null;
 		try {
 			Optional<Usuario> optional = userRepository.findById(id);
-			userEntity = ResponseEntity.ok().body(optional.get());
+			if (optional.isPresent()) {
+				userEntity = optional.get();
+			}else {
+				userEntity = (Usuario) new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND).getBody();
+			}
 		} catch (Exception e) {
-			userEntity = new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+			e.printStackTrace();
+			throw e;
 		}return userEntity;
 	}
 	
 	public Usuario save(UserAccountDTO userAccountDTO) throws Exception {
 		try {
-			Usuario usuario = new Usuario();
-			usuario.setName(userAccountDTO.getName());
-			usuario.setEmail(userAccountDTO.getEmail());
-			usuario.setPassword(new BCryptPasswordEncoder().encode(userAccountDTO.getPassword()));
-			usuario.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
+			Usuario usuario = new Usuario(userAccountDTO.getName(), userAccountDTO.getEmail(), new BCryptPasswordEncoder().encode(userAccountDTO.getPassword()), new Date(Calendar.getInstance().getTimeInMillis()));
 			Account account = accountController.save(userAccountDTO.getEmail(),userAccountDTO.getZipCode(), userAccountDTO.getNeighborhood(), userAccountDTO.getCity(), userAccountDTO.getUf(), userAccountDTO.getDateOfBirth(), userAccountDTO.getPhone());
 			usuario.setAccount(account);
 			accountRepository.save(account);
@@ -74,14 +72,13 @@ public class UserService extends HibernateConfiguration {
 	public ResponseEntity<Usuario> update(Integer id, UserDTO userDTO) {
 		ResponseEntity<Usuario> userEntity = null;
 		try {
-			Optional<Usuario> userModified = userRepository.findById(id);
+			Usuario userModified = findById(id);
 			if (!userModified.equals(null)) {
-				userModified.get().setName(userDTO.getName());
-				userModified.get().setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
-				userModified.get().setLastUpdateDate(new Date(Calendar.getInstance().getTimeInMillis()));
+				userModified.setName(userDTO.getName());
+				userModified.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
+				userModified.setLastUpdateDate(new Date(Calendar.getInstance().getTimeInMillis()));
 				userRepository.save(userModified);
 				userEntity = ResponseEntity.ok().build();
-				
 			}else {
 				userEntity = new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
 			}
@@ -96,26 +93,25 @@ public class UserService extends HibernateConfiguration {
 		ResponseEntity<?> entity = null;
 		try {
 			Integer accountId = findIdAccoutByUser(id);
-			userRepository.deleteById(id);
-			accountController.deleteById(accountId);
-			entity = ResponseEntity.ok().build();
+			if (!accountId.equals(null)){
+				userRepository.deleteById(id);
+				accountController.deleteById(accountId);
+				entity = ResponseEntity.ok().build();
+			}else {
+				entity = ResponseEntity.notFound().build();
+			}
 		} catch (Exception e) {
-			entity = ResponseEntity.notFound().build();
+			e.printStackTrace();
+			throw e;
 		}return entity;
 	}
 	
+	//Verify User exists
 	public Boolean findByExists(Integer id, String email) {
 		boolean ret = false;
 		try {
-			StringBuilder sql = new StringBuilder();
-			sql.append(" SELECT COUNT(*) 			");
-			sql.append(" FROM usuario 				");
-			sql.append(" WHERE (USER_ID = :user_id  ");
-			sql.append("	OR EMAIL = :email) 		");
-			Query q = entityManager().createNativeQuery(sql.toString());
-			q.setParameter("user_id", id);
-			q.setParameter("email", email);
-			ret = ((BigInteger) q.getSingleResult()).longValue() == 0 ? false : true;
+			Integer user = userRepository.findByUserExistsQuery(id, email);
+			ret = !user.equals(0) ? true : false;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -123,23 +119,24 @@ public class UserService extends HibernateConfiguration {
 	}
 	
 	//Verify Account where email user and account identical
-	@SuppressWarnings("rawtypes")
 	public Integer findIdAccoutByUser(Integer id) {
 		Integer ret = null;
 		try {
-			StringBuilder sql = new StringBuilder();
-			sql.append(" SELECT ACC.ACCOUNT_ID 			   ");
-			sql.append(" FROM account ACC 				   ");
-			sql.append(" JOIN usuario USER 				   ");
-			sql.append(" 	ON USER.EMAIL = ACC.USER_EMAIL ");
-			sql.append(" WHERE USER.USER_ID = :user_id 	   ");
-			org.hibernate.query.Query q = getSession().createSQLQuery(sql.toString());
-			q.setParameter("user_id", id);
-			ret = Integer.parseInt(q.uniqueResult().toString());
-			System.out.println(ret);
+			Integer userExists = userRepository.findIdAccoutByUserQuery(id);
+			ret = !userExists.equals(null) || !userExists.equals("") ? userExists : null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ret;
 		}return ret.intValue();
+	}
+	
+	public String findUserNameByEmail(String email) {
+		try {
+			String returnEmail = userRepository.findUserNameByEmailQuery(email);
+			return returnEmail;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 }

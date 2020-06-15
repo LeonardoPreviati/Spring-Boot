@@ -69,11 +69,9 @@ public class Account {
 		super();
 	}
 
-	public Account(Integer id, String email, String zipCode, String neighborhood, String city, String uf,
-			Date dateOfBirth, String phone, List<QuizFinished> quizFinished, List<QuizResults> quizResults,
-			Date creationDate, Date lastUpdateDate) {
+	public Account(String email, String zipCode, String neighborhood, String city, String uf,
+			Date dateOfBirth, String phone, Date creationDate) {
 		super();
-		this.id = id;
 		this.email = email;
 		this.zipCode = zipCode;
 		this.neighborhood = neighborhood;
@@ -81,10 +79,8 @@ public class Account {
 		this.uf = uf;
 		this.dateOfBirth = dateOfBirth;
 		this.phone = phone;
-		this.quizFinished = quizFinished;
-		this.quizResults = quizResults;
 		this.creationDate = creationDate;
-		this.lastUpdateDate = lastUpdateDate;
+		
 	}
 
 	@Override
@@ -177,4 +173,6 @@ public class Account {
 		result = prime * result + ((zipCode == null) ? 0 : zipCode.hashCode());
 		return result;
 	}
+	
+	
 }

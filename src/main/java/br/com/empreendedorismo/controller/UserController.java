@@ -2,6 +2,8 @@ package br.com.empreendedorismo.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +55,14 @@ public class UserController {
 		long startTime = System.currentTimeMillis();
 		log.info("UserController.findById(@PathVariable Integer id) - BEGIN");
 		ResponseEntity<Usuario> user = null;
+		Usuario optional = userService.findById(id);
 		try {
-			user = userService.findById(id);
+			if (!optional.equals(null)) {
+				user = ResponseEntity.ok().build();
+			}else {
+				user = ResponseEntity.notFound().build();
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -122,5 +130,15 @@ public class UserController {
 		log.info("UserController.deleteById(@PathVariable Integer id) - END (" + endTime + "ms)");
 		return entity;
 		
+	}
+	
+	public String findUserNameByEmail(String email) {
+		try {
+			String returnEmail = userService.findUserNameByEmail(email);
+			return returnEmail;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 }
