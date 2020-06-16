@@ -1,7 +1,6 @@
 package br.com.empreendedorismo.entity;
 
-import java.sql.Date;
-
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,15 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.SelectBeforeUpdate;
-import org.hibernate.validator.constraints.UniqueElements;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 @Data
@@ -64,6 +57,7 @@ public class QuizResults {
 		super();
 	}
 
+	@SuppressWarnings("null")
 	public QuizResults(Integer id, Account account, Quiz quiz, Quest quest, Category category, Answer answer,
 			Date creationDate, Date lastUpdateDate) {
 		super();
@@ -73,8 +67,8 @@ public class QuizResults {
 		this.quest = quest;
 		this.category = category;
 		this.answer = answer;
-		this.creationDate = creationDate;
-		this.lastUpdateDate = lastUpdateDate;
+		this.creationDate = creationDate == null ? new Date(creationDate.getTime()) : creationDate;
+		this.lastUpdateDate = lastUpdateDate == null? new Date(lastUpdateDate.getTime()) :lastUpdateDate;
 	}
 
 	@Override

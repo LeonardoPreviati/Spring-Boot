@@ -20,12 +20,12 @@ import br.com.empreendedorismo.dto.QuizFinishedDTO;
 import br.com.empreendedorismo.entity.Account;
 import br.com.empreendedorismo.entity.Quiz;
 import br.com.empreendedorismo.entity.QuizFinished;
-import br.com.empreendedorismo.entity.Usuario;
+import br.com.empreendedorismo.entity.DPUser;
 import br.com.empreendedorismo.respository.AccountRepository;
 import br.com.empreendedorismo.respository.QuizFinishedRepository;
 import br.com.empreendedorismo.respository.QuizRepository;
 import br.com.empreendedorismo.service.QuizFinishedService;
-import br.com.empreendedorismo.service.UserService;
+import br.com.empreendedorismo.service.DPUserService;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController

@@ -1,12 +1,14 @@
 package br.com.empreendedorismo.service;
 
-import java.sql.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.empreendedorismo.dto.AccountDTO;
-import br.com.empreendedorismo.dto.UserDTO;
+import br.com.empreendedorismo.dto.DPUserDTO;
 import br.com.empreendedorismo.entity.Account;
 import br.com.empreendedorismo.entity.QuizFinished;
-import br.com.empreendedorismo.entity.Usuario;
+import br.com.empreendedorismo.entity.DPUser;
 import br.com.empreendedorismo.respository.AccountRepository;
 
 
@@ -55,7 +57,7 @@ public class AccountService {
 	
 	public Account save(String email, String zipCode, String neighborhood, String locale, String uf, Date dateOfBirth, String phone)  {
 		try {
-			Account account = new Account(email,zipCode, neighborhood, locale, uf, dateOfBirth, phone, new Date(Calendar.getInstance().getTimeInMillis()));
+			Account account = new Account(email,zipCode, neighborhood, locale, uf, dateOfBirth, phone, new Date());
 			return account;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,6 +77,7 @@ public class AccountService {
 			accountModified.setLastUpdateDate(new Date(Calendar.getInstance().getTimeInMillis()));
 			accountRepository.save(accountModified);
 			return accountModified;	
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

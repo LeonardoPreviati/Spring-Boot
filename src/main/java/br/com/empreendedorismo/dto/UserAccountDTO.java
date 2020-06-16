@@ -1,6 +1,8 @@
 package br.com.empreendedorismo.dto;
 
-import java.sql.Date;
+
+
+import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
 import lombok.Data;

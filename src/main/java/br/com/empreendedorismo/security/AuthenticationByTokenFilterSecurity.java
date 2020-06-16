@@ -1,19 +1,15 @@
 package br.com.empreendedorismo.security;
 
 import java.io.IOException;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import br.com.empreendedorismo.controller.UserController;
-import br.com.empreendedorismo.entity.Usuario;
-import br.com.empreendedorismo.respository.UserRepository;
+import br.com.empreendedorismo.entity.DPUser;
+import br.com.empreendedorismo.respository.DPUserRepository;
 import br.com.empreendedorismo.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,12 +18,12 @@ public class AuthenticationByTokenFilterSecurity extends OncePerRequestFilter{
 
 	private TokenService tokenService;
 	
-	private UserRepository userRepository;
+	private DPUserRepository dpUserRepository;
 	
 	// Injection by constructor
-	public AuthenticationByTokenFilterSecurity(TokenService tokenService, UserRepository userRepository) {
+	public AuthenticationByTokenFilterSecurity(TokenService tokenService, DPUserRepository dpUserRepository) {
 		this.tokenService = tokenService;
-		this.userRepository = userRepository;
+		this.dpUserRepository = dpUserRepository;
 	}
 
 	@Override
@@ -43,8 +39,8 @@ public class AuthenticationByTokenFilterSecurity extends OncePerRequestFilter{
 
 	protected void userAuthenticate(String token) {
 		Integer userId = tokenService.getUserId(token);
-		Usuario usuario = userRepository.findById(userId).get();
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+		DPUser user = dpUserRepository.findById(userId).get();
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 	}

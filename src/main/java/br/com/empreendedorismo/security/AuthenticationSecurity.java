@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import br.com.empreendedorismo.entity.Usuario;
-import br.com.empreendedorismo.respository.UserRepository;
+import br.com.empreendedorismo.entity.DPUser;
+import br.com.empreendedorismo.respository.DPUserRepository;
 
 //Chama a service para realizar a autenticação do login
 @Service
@@ -18,11 +18,11 @@ public class AuthenticationSecurity implements UserDetailsService{
 	
 	
 	@Autowired
-	private UserRepository userRepository;
+	private DPUserRepository dpUserRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Usuario> user = userRepository.findByEmail(username);
+		Optional<DPUser> user = dpUserRepository.findByEmail(username);
 		if (user.isPresent()) {
 			return user.get();
 		}

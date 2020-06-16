@@ -1,7 +1,6 @@
 package br.com.empreendedorismo.service;
 
-import java.sql.Date;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +11,17 @@ import org.springframework.stereotype.Service;
 import br.com.empreendedorismo.configuration.HibernateConfiguration;
 import br.com.empreendedorismo.controller.AccountController;
 import br.com.empreendedorismo.dto.UserAccountDTO;
-import br.com.empreendedorismo.dto.UserDTO;
+import br.com.empreendedorismo.dto.DPUserDTO;
 import br.com.empreendedorismo.entity.Account;
-import br.com.empreendedorismo.entity.Usuario;
+import br.com.empreendedorismo.entity.DPUser;
 import br.com.empreendedorismo.respository.AccountRepository;
-import br.com.empreendedorismo.respository.UserRepository;
+import br.com.empreendedorismo.respository.DPUserRepository;
 
 @Service
-public class UserService extends HibernateConfiguration {
+public class DPUserService extends HibernateConfiguration {
 
 	@Autowired
-	private UserRepository userRepository;
+	private DPUserRepository dpUserRepository;
 	
 	@Autowired
 	private AccountRepository accountRepository;
@@ -31,23 +30,23 @@ public class UserService extends HibernateConfiguration {
 	private AccountController accountController;
 	
 
-	public List<Usuario> findAll() {
+	public List<DPUser> findAll() {
 		try {
-			return userRepository.findAll();
+			return dpUserRepository.findAll();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
 	
-	public Usuario findById(Integer id) {
-		Usuario userEntity = null;
+	public DPUser findById(Integer id) {
+		DPUser userEntity = null;
 		try {
-			Optional<Usuario> optional = userRepository.findById(id);
+			Optional<DPUser> optional = dpUserRepository.findById(id);
 			if (optional.isPresent()) {
 				userEntity = optional.get();
 			}else {
-				userEntity = (Usuario) new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND).getBody();
+				userEntity = (DPUser) new ResponseEntity<DPUser>(HttpStatus.NOT_FOUND).getBody();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,32 +54,36 @@ public class UserService extends HibernateConfiguration {
 		}return userEntity;
 	}
 	
-	public Usuario save(UserAccountDTO userAccountDTO) throws Exception {
+	public DPUser save(UserAccountDTO userAccountDTO) throws Exception {
 		try {
-			Usuario usuario = new Usuario(userAccountDTO.getName(), userAccountDTO.getEmail(), new BCryptPasswordEncoder().encode(userAccountDTO.getPassword()), new Date(Calendar.getInstance().getTimeInMillis()));
+			DPUser user = new DPUser();
+			user.setName(userAccountDTO.getName());
+			user.setEmail(userAccountDTO.getEmail());
+			user.setPassword(new BCryptPasswordEncoder().encode(userAccountDTO.getPassword()));
+			user.setCreationDate(new Date());
 			Account account = accountController.save(userAccountDTO.getEmail(),userAccountDTO.getZipCode(), userAccountDTO.getNeighborhood(), userAccountDTO.getCity(), userAccountDTO.getUf(), userAccountDTO.getDateOfBirth(), userAccountDTO.getPhone());
-			usuario.setAccount(account);
+			user.setAccount(account);
 			accountRepository.save(account);
-			userRepository.save(usuario);
-			return usuario;
+			dpUserRepository.save(user);
+			return user;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
 	
-	public ResponseEntity<Usuario> update(Integer id, UserDTO userDTO) {
-		ResponseEntity<Usuario> userEntity = null;
+	public ResponseEntity<DPUser> update(Integer id, DPUserDTO dpUserDTO) {
+		ResponseEntity<DPUser> userEntity = null;
 		try {
-			Usuario userModified = findById(id);
+			DPUser userModified = findById(id);
 			if (!userModified.equals(null)) {
-				userModified.setName(userDTO.getName());
-				userModified.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
-				userModified.setLastUpdateDate(new Date(Calendar.getInstance().getTimeInMillis()));
-				userRepository.save(userModified);
+				userModified.setName(dpUserDTO.getName());
+				userModified.setPassword(new BCryptPasswordEncoder().encode(dpUserDTO.getPassword()));
+				userModified.setLastUpdateDate(new Date());
+				dpUserRepository.save(userModified);
 				userEntity = ResponseEntity.ok().build();
 			}else {
-				userEntity = new ResponseEntity<Usuario>(HttpStatus.NOT_FOUND);
+				userEntity = new ResponseEntity<DPUser>(HttpStatus.NOT_FOUND);
 			}
 			
 		} catch (Exception e) {
@@ -94,7 +97,7 @@ public class UserService extends HibernateConfiguration {
 		try {
 			Integer accountId = findIdAccoutByUser(id);
 			if (!accountId.equals(null)){
-				userRepository.deleteById(id);
+				dpUserRepository.deleteById(id);
 				accountController.deleteById(accountId);
 				entity = ResponseEntity.ok().build();
 			}else {
@@ -110,7 +113,7 @@ public class UserService extends HibernateConfiguration {
 	public Boolean findByExists(Integer id, String email) {
 		boolean ret = false;
 		try {
-			Integer user = userRepository.findByUserExistsQuery(id, email);
+			Integer user = dpUserRepository.findByUserExistsQuery(id, email);
 			ret = !user.equals(0) ? true : false;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -122,7 +125,7 @@ public class UserService extends HibernateConfiguration {
 	public Integer findIdAccoutByUser(Integer id) {
 		Integer ret = null;
 		try {
-			Integer userExists = userRepository.findIdAccoutByUserQuery(id);
+			Integer userExists = dpUserRepository.findIdAccoutByUserQuery(id);
 			ret = !userExists.equals(null) || !userExists.equals("") ? userExists : null;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -132,7 +135,7 @@ public class UserService extends HibernateConfiguration {
 	
 	public String findUserNameByEmail(String email) {
 		try {
-			String returnEmail = userRepository.findUserNameByEmailQuery(email);
+			String returnEmail = dpUserRepository.findUserNameByEmailQuery(email);
 			return returnEmail;
 		} catch (Exception e) {
 			e.printStackTrace();

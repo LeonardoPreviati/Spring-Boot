@@ -22,7 +22,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import br.com.empreendedorismo.respository.UserRepository;
+import br.com.empreendedorismo.respository.DPUserRepository;
 import br.com.empreendedorismo.service.TokenService;
 
 
@@ -38,7 +38,7 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter{
 	private TokenService tokenService;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private DPUserRepository dpUserRepository;
 	
 	@Override
 	@Bean
@@ -56,7 +56,7 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-		.antMatchers(HttpMethod.POST, "/user").permitAll()
+		.antMatchers(HttpMethod.POST, "/dpUser").permitAll()
 		.antMatchers(HttpMethod.POST, "/quest").permitAll()
 		.antMatchers(HttpMethod.POST, "/auth").permitAll()
 		.antMatchers(HttpMethod.POST, "/created").permitAll()
@@ -74,7 +74,7 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter{
 		//disable one type of hacker attack
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         //It is not to create session, because we will use token, for each authentication
-        .and().addFilterBefore(new AuthenticationByTokenFilterSecurity(tokenService, userRepository), UsernamePasswordAuthenticationFilter.class);
+        .and().addFilterBefore(new AuthenticationByTokenFilterSecurity(tokenService, dpUserRepository), UsernamePasswordAuthenticationFilter.class);
 	}
 	
 	//Static Resource Settings(js, css, imagens, etc...)

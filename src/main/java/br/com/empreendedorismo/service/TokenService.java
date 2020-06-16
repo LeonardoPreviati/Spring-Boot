@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import br.com.empreendedorismo.controller.AuthenticationController;
-import br.com.empreendedorismo.entity.Usuario;
+import br.com.empreendedorismo.entity.DPUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -46,7 +46,7 @@ public class TokenService {
 	private String secret;
 	
 	public String generateToken(Authentication authentication) {
-		Usuario logged = (Usuario) authentication.getPrincipal();
+		DPUser logged = (DPUser) authentication.getPrincipal();
 		Date date = new Date();
 		Date dateExpiration = new Date(date.getTime() + Long.parseLong(expiration));
 		return Jwts.builder()
@@ -86,7 +86,7 @@ public class TokenService {
             email.setMsg("Olá " + name + ", Esta é uma notificação para confirmar seu login efetuado com sucesso "
             		   + "na Discover Profile.\n\nAtenciosamente,\nEquipe Discover Profile");
             email.addTo(dataLogin.getName());
-            log.info("O usuario '" + name + "' entrou no sistema.");
+            log.info("User " + name + ", logged into the system.");
             email.send();
 
         } catch (EmailException e) {

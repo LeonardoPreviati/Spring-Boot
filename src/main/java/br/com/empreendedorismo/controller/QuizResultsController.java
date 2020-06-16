@@ -79,7 +79,7 @@ public class QuizResultsController {
 		return quizResultsSave;
 	}
 	
-	/*@RequestMapping(value = "{quizResultsId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/findById/{quizResultsId}", method = RequestMethod.GET)
 	public ResponseEntity<QuizResults> findById(@PathVariable Integer quizResultsId){
 		long startTime = System.currentTimeMillis();
 		log.info("QuizResultsController.findById(@PathVariable Integer quizResultsId) - BEGIN");
@@ -96,5 +96,5 @@ public class QuizResultsController {
 		long endTime = System.currentTimeMillis() - startTime;
 		log.info("QuizResultsController.findById(@PathVariable Integer quizResultsId) - END (" + endTime + "ms)");
 		return accountResponse;	
-	}*/
+	}
 }

@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 import br.com.empreendedorismo.configuration.HibernateConfiguration;
 import br.com.empreendedorismo.dto.CategoryDTO;
 import br.com.empreendedorismo.entity.Category;
-import br.com.empreendedorismo.entity.Usuario;
+import br.com.empreendedorismo.entity.DPUser;
 
 import br.com.empreendedorismo.respository.CategoryRepository;
 

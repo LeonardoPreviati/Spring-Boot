@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import br.com.empreendedorismo.entity.QuizResults;
 
+
 @SuppressWarnings("rawtypes")
 public interface QuizResultsRepository extends CrudRepository<QuizResults, Integer>{
 	
@@ -49,9 +50,16 @@ public interface QuizResultsRepository extends CrudRepository<QuizResults, Integ
 			     + " WHERE QR.ACCOUNT_ID = :accountId   "
 			     + "   AND QR.QUIZ_ID = :quizId     	"
 			     + "   AND QR.QUEST_ID = :questId     	"
-			     + "   AND QR.CATEGORY_ID = :categoryId "
-			     + "   AND QR.ANSWER_ID = :answerId	", nativeQuery =  true)
-	public List<Integer> findQuizResultsExists (Integer accountId, Integer quizId, Integer questId, Integer categoryId, Integer answerId);
+			     + "   AND QR.CATEGORY_ID = :categoryId ", nativeQuery =  true)
+	public List<Integer> findQuizResultsExists (Integer accountId, Integer quizId, Integer questId, Integer categoryId);
+	
+	@Query(value = " SELECT A.ANSWER_ID     "
+			+ 	   " FROM answer A          "
+			+ 	   " WHERE A.VALUE = :questValue ", nativeQuery = true)
+	public List<Integer> findAnswerValueByQuestCod (Double questValue);
+	
+	
+	
 	
 
 	

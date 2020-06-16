@@ -40,7 +40,7 @@ public class Quest {
 	
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "QUIZ_ID")
+	@JoinColumn(name = "QUIZ_ID", referencedColumnName = "QUIZ_ID")
 	private Quiz quiz;
 	
 	@JsonIgnore

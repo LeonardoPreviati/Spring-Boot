@@ -32,7 +32,7 @@ public class AuthenticationController {
 	private TokenService tokenService;
 	
 	@Autowired
-	private UserController userController;
+	private DPUserController dpUserController;
 	
 	@PostMapping
 	public ResponseEntity<TokenDTO> authentication(@RequestBody @Valid LoginFormDTO loginFormDTO){
@@ -40,7 +40,7 @@ public class AuthenticationController {
 		try {
 			Authentication authentication = authenticationManager.authenticate(dataLogin);
 			String token = tokenService.generateToken(authentication);
-			String name =  userController.findUserNameByEmail(dataLogin.getName());
+			String name =  dpUserController.findUserNameByEmail(dataLogin.getName());
 			tokenService.sendEmail(name, dataLogin);
 			return ResponseEntity.ok(new TokenDTO(token,"Bearer"));
 		} catch (org.springframework.security.core.AuthenticationException e) {

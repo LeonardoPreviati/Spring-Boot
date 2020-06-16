@@ -1,14 +1,9 @@
 package br.com.empreendedorismo.entity;
 
-import java.sql.Date;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -70,7 +65,7 @@ public class Account {
 	}
 
 	public Account(String email, String zipCode, String neighborhood, String city, String uf,
-			Date dateOfBirth, String phone, Date creationDate) {
+			Date dateOfBirth, String phone, Date date) {
 		super();
 		this.email = email;
 		this.zipCode = zipCode;
@@ -79,7 +74,7 @@ public class Account {
 		this.uf = uf;
 		this.dateOfBirth = dateOfBirth;
 		this.phone = phone;
-		this.creationDate = creationDate;
+		this.creationDate = date == null ? new Date(creationDate.getTime()) : date;
 		
 	}
 

@@ -1,8 +1,9 @@
 package br.com.empreendedorismo.entity;
 
-import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -28,8 +29,8 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "USUARIO")
-public class Usuario implements UserDetails {
+@Table(name = "DP_USER")
+public class DPUser implements UserDetails {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -98,16 +99,17 @@ public class Usuario implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-	public Usuario() {
+	public DPUser() {
 		super();
 	}
 	
-	public Usuario(String name, String email, String password, Date date) {
+	public DPUser(String name, String email, String password, Date creationDate, Date lastUpdateDate) {
 		super();
 		this.name = name;
 		this.email = email;
 		this.password = password;
-		this.creationDate = date;
+		this.creationDate = creationDate == null ? new Date(creationDate.getTime()) : creationDate;
+		this.lastUpdateDate = lastUpdateDate == null ? new Date(lastUpdateDate.getTime()) : lastUpdateDate;
 		
 	}
 
@@ -119,7 +121,7 @@ public class Usuario implements UserDetails {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Usuario other = (Usuario) obj;
+		DPUser other = (DPUser) obj;
 		if (account == null) {
 			if (other.account != null)
 				return false;
