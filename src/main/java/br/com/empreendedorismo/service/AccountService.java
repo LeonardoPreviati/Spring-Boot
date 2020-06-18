@@ -4,24 +4,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
-
-import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import br.com.empreendedorismo.dto.AccountDTO;
-import br.com.empreendedorismo.dto.DPUserDTO;
 import br.com.empreendedorismo.entity.Account;
-import br.com.empreendedorismo.entity.QuizFinished;
-import br.com.empreendedorismo.entity.DPUser;
 import br.com.empreendedorismo.respository.AccountRepository;
-
 
 @Service
 public class AccountService {

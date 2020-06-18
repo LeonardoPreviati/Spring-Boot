@@ -1,12 +1,6 @@
 package br.com.empreendedorismo.security;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,15 +15,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import br.com.empreendedorismo.entity.DPUser;
 import br.com.empreendedorismo.respository.DPUserRepository;
 import br.com.empreendedorismo.service.TokenService;
-
-
+import br.com.empreendedorismo.utils.Constants;
 
 @EnableWebSecurity
 @Configuration
-public class ConfigurationSecurity extends WebSecurityConfigurerAdapter{
+public class ConfigurationSecurity extends WebSecurityConfigurerAdapter implements WebMvcConfigurer{
 	
 	@Autowired
 	private AuthenticationSecurity authenticationSecurity;
@@ -54,17 +50,11 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter{
 	
 	//Settings Authorization
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-		.antMatchers(HttpMethod.POST, "/dpUser").permitAll()
-		.antMatchers(HttpMethod.POST, "/quest").permitAll()
-		.antMatchers(HttpMethod.POST, "/auth").permitAll()
-		.antMatchers(HttpMethod.POST, "/created").permitAll()
-		.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
-		.antMatchers(HttpMethod.GET, "/account/**").permitAll()
-		.antMatchers(HttpMethod.GET, "/category/findById/*").permitAll()
-		.antMatchers(HttpMethod.POST,"/category/created").permitAll()
-		.antMatchers(HttpMethod.DELETE,"/category/deleteById/*").permitAll()
+	protected void configure(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.authorizeRequests()
+		.antMatchers(HttpMethod.POST, Constants.AUTH, Constants.DP_USER).permitAll()
+		.antMatchers(HttpMethod.GET,  Constants.ACTUATOR).hasAuthority(Constants.DISCOVER_PROFILE)
+		.antMatchers(HttpMethod.GET,  Constants.QUIZ_RESULTS).hasAnyAuthority(Constants.USER, Constants.ADMIN)
 		//above endpoints, can be accessed without authentication via token
 		.anyRequest().authenticated()
 		//to access the rest of the requests, you will need to be authenticated to the system
@@ -80,6 +70,19 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter{
 	//Static Resource Settings(js, css, imagens, etc...)
 	@Override
 	public void configure(WebSecurity web) throws Exception {
+		
+	}
+	
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+		//spring automatically considers any prefixes present in the application
+		.allowedOrigins(Constants.ALLOWED_ORIGINS_HOSTNAME)
+		//origin allowed (host of front)
+		.allowedMethods(Constants.GET, Constants.POST, Constants.PUT, Constants.DELETE);
+		//type of request allowed
+		
+		
 		
 	}
 

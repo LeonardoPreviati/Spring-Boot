@@ -2,9 +2,7 @@ package br.com.empreendedorismo.controller;
 
 import java.util.HashMap;
 import java.util.Optional;
-
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.empreendedorismo.respository.AccountRepository;
 import br.com.empreendedorismo.service.QuizResultsService;
 import lombok.extern.slf4j.Slf4j;
-import br.com.empreendedorismo.dto.QuizFinishedDTO;
 import br.com.empreendedorismo.dto.QuizResultsDTO;
 import br.com.empreendedorismo.entity.Account;
-import br.com.empreendedorismo.entity.Quiz;
-import br.com.empreendedorismo.entity.QuizFinished;
 import br.com.empreendedorismo.entity.QuizResults;
 
 

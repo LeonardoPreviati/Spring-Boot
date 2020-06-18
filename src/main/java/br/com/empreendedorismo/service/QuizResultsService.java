@@ -153,7 +153,7 @@ public class QuizResultsService extends HibernateConfiguration{
 				quizResults.setAnswer(answer.get());
 				quizResults.setCreationDate(new Date());
 				quizResultsRepository.save(quizResults);
-			}else if (!quizResultsExist.isEmpty() && !findAnswerValueByQuestCod.isEmpty()){
+		   }else if (!quizResultsExist.isEmpty() && !findAnswerValueByQuestCod.isEmpty()){
 				updateUser(answer.get(),quizResultsExist.get(0));
 			}return quizResults;
 		} catch (ConstraintViolationException e) {

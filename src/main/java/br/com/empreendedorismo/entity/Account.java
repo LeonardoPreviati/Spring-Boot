@@ -47,10 +47,7 @@ public class Account {
 	@Column(name = "PHONE", unique = true)
 	private String phone;
 	
-	@OneToMany(mappedBy = "account")
-	private List<QuizFinished> quizFinished;
-	
-	@JsonIgnore
+    @JsonIgnore
 	@OneToMany(mappedBy = "account")
 	private List<QuizResults> quizResults;
 	
@@ -127,11 +124,6 @@ public class Account {
 				return false;
 		} else if (!phone.equals(other.phone))
 			return false;
-		if (quizFinished == null) {
-			if (other.quizFinished != null)
-				return false;
-		} else if (!quizFinished.equals(other.quizFinished))
-			return false;
 		if (quizResults == null) {
 			if (other.quizResults != null)
 				return false;
@@ -162,7 +154,6 @@ public class Account {
 		result = prime * result + ((lastUpdateDate == null) ? 0 : lastUpdateDate.hashCode());
 		result = prime * result + ((neighborhood == null) ? 0 : neighborhood.hashCode());
 		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
-		result = prime * result + ((quizFinished == null) ? 0 : quizFinished.hashCode());
 		result = prime * result + ((quizResults == null) ? 0 : quizResults.hashCode());
 		result = prime * result + ((uf == null) ? 0 : uf.hashCode());
 		result = prime * result + ((zipCode == null) ? 0 : zipCode.hashCode());

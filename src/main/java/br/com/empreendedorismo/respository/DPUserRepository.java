@@ -11,22 +11,26 @@ public interface DPUserRepository extends JpaRepository<DPUser, Integer>{
 	
 	public Optional<DPUser> findByEmail(String email);
 
-	@Query(value = " SELECT COUNT(*) 		   "
-				 + " FROM dp_user 	           "
-				 + " WHERE (USER_ID = :userId  "
-				 + " 	OR EMAIL = :email) 	   ", nativeQuery = true)
+	@Query(value = " SELECT COUNT(U.USER_ID)       "
+				 + " FROM dp_user U	       	       "
+				 + " JOIN account ACC		       "
+				 + "   ON U.EMAIL = ACC.EMAIL      "
+				 + " WHERE (U.USER_ID = :userId    "
+				 + " 	OR U.EMAIL = :email) 	   ", nativeQuery = true)
 	public Integer findByUserExistsQuery (Integer userId, String email);
 	
-	@Query(value = " SELECT ACC.ACCOUNT_ID 			   "
-				 + " FROM account ACC 				   "
-				 + " JOIN dp_user USER 				   "
-				 + " 	ON USER.EMAIL = ACC.USER_EMAIL "
-				 + " WHERE USER.USER_ID = :userId 	   ", nativeQuery = true)
+	@Query(value = " SELECT ACC.ACCOUNT_ID 			"
+				 + " FROM account ACC 				"
+				 + " JOIN dp_user U 				"
+				 + " 	ON U.EMAIL = ACC.EMAIL "
+				 + " WHERE U.USER_ID = :userId 	    ", nativeQuery = true)
 	public Integer findIdAccoutByUserQuery (Integer userId);
 	
-	@Query(value = " SELECT U.NAME  		"
-				 + " FROM dp_user  U 		"
-				 + " WHERE U.EMAIL = :email ", nativeQuery = true)
+	@Query(value = " SELECT U.NAME       		   "
+			 	 + " FROM dp_user U	       	       "
+			     + " JOIN account ACC		       "
+			     + "   ON U.EMAIL = ACC.EMAIL "
+			     + " WHERE U.EMAIL = :email 	   ", nativeQuery = true)
 	public String findUserNameByEmailQuery (String email);
 
 	

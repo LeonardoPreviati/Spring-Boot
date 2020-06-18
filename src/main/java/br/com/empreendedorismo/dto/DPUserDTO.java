@@ -15,7 +15,12 @@ public class DPUserDTO {
 	@NotBlank(message = "Necessário inserir a senha!!!")
 	private String password;
 	
+	public DPUserDTO() {
+		
+	}
+	
 	public DPUserDTO(String name, String email, String password) {
+		super();
 		this.name = name;
 		this.email = email;
 		this.password = password;

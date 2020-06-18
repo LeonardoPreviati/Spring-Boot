@@ -17,11 +17,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -50,6 +52,7 @@ public class DPUser implements UserDetails {
 	
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "USER_PROFILE", joinColumns = { @JoinColumn(name = "USER_ID"), }, inverseJoinColumns = { @JoinColumn(name = "PROFILE_ID"), })
 	private List<Profile> profile = new ArrayList<>();
 	
 	@JsonIgnore
@@ -73,6 +76,9 @@ public class DPUser implements UserDetails {
 	@JsonIgnore
 	public String getPassword() {
 		return this.password;
+	}
+	public void setPassword(String password) {
+		this.password = new BCryptPasswordEncoder().encode(password);
 	}
 	@JsonIgnore
 	@Override

@@ -10,9 +10,9 @@ import br.com.empreendedorismo.entity.Category;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer>{
 	
-	@Query(value = " SELECT * 					        "
-				 + " FROM category 				        "
-				 + " WHERE COD_CATEGORY = :codCategory  ", nativeQuery = true)
+	@Query(value = " SELECT * 					       "
+				 + " FROM category 				       "
+				 + " WHERE COD_CATEGORY = :codCategory ", nativeQuery = true)
 	Optional<Category> findCategoryByCod (String codCategory);
 
 	

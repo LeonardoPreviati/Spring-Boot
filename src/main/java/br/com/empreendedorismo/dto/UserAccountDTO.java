@@ -5,6 +5,9 @@ package br.com.empreendedorismo.dto;
 import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import lombok.Data;
 
 @Data

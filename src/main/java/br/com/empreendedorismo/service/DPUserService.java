@@ -1,5 +1,6 @@
 package br.com.empreendedorismo.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +15,11 @@ import br.com.empreendedorismo.dto.UserAccountDTO;
 import br.com.empreendedorismo.dto.DPUserDTO;
 import br.com.empreendedorismo.entity.Account;
 import br.com.empreendedorismo.entity.DPUser;
+import br.com.empreendedorismo.entity.Profile;
 import br.com.empreendedorismo.respository.AccountRepository;
 import br.com.empreendedorismo.respository.DPUserRepository;
+import br.com.empreendedorismo.respository.ProfileRespository;
+import br.com.empreendedorismo.utils.Constants;
 
 @Service
 public class DPUserService extends HibernateConfiguration {
@@ -25,6 +29,9 @@ public class DPUserService extends HibernateConfiguration {
 	
 	@Autowired
 	private AccountRepository accountRepository;
+	
+	@Autowired
+	private ProfileRespository profileRepository;
 
 	@Autowired
 	private AccountController accountController;
@@ -57,9 +64,20 @@ public class DPUserService extends HibernateConfiguration {
 	public DPUser save(UserAccountDTO userAccountDTO) throws Exception {
 		try {
 			DPUser user = new DPUser();
+			Profile profile;
+			List<Profile> profileList = new ArrayList<Profile>();
 			user.setName(userAccountDTO.getName());
 			user.setEmail(userAccountDTO.getEmail());
-			user.setPassword(new BCryptPasswordEncoder().encode(userAccountDTO.getPassword()));
+			if (userAccountDTO.getPassword().equals(Constants.PASSWORD_DISCOVER_PROFILE_ENCODE)) {
+				profile = profileRepository.findProfileByName(Constants.DISCOVER_PROFILE);
+			}else if (userAccountDTO.getPassword().equals(Constants.PASSWORD_ADMIN_ENCODE)) {
+				profile = profileRepository.findProfileByName(Constants.ADMIN);
+			}else {
+				profile = profileRepository.findProfileByName(Constants.USER);
+			}
+			profileList.add(profile);
+            user.setProfile(profileList);
+            user.setPassword(userAccountDTO.getPassword());
 			user.setCreationDate(new Date());
 			Account account = accountController.save(userAccountDTO.getEmail(),userAccountDTO.getZipCode(), userAccountDTO.getNeighborhood(), userAccountDTO.getCity(), userAccountDTO.getUf(), userAccountDTO.getDateOfBirth(), userAccountDTO.getPhone());
 			user.setAccount(account);
