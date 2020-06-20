@@ -11,7 +11,7 @@ import br.com.empreendedorismo.entity.QuizResults;
 public interface QuizResultsRepository extends CrudRepository<QuizResults, Integer>{
 	
 	
-	@Query(value = " SELECT C.COD_CATEGORY, C.DESCRIPTION, A.VALUE "
+	@Query(value = " SELECT C.CATEGORY_ID, C.COD_CATEGORY, C.DESCRIPTION, A.VALUE "
 			+ 	   " FROM quiz_results QR 						   "
 			+ 	   " JOIN answer A								   "
 			+ 	   "   ON QR.ANSWER_ID = A.ANSWER_ID			   "
@@ -60,6 +60,24 @@ public interface QuizResultsRepository extends CrudRepository<QuizResults, Integ
 			+ 	   " FROM answer A          "
 			+ 	   " WHERE A.VALUE = :questValue ", nativeQuery = true)
 	public List<Integer> findAnswerValueByQuestCod (Double questValue);
+	
+	@Query(value = " SELECT DISTINCT(C.COD_CATEGORY) 	 "
+			     + " FROM category C 					 "
+			     + " JOIN quiz_results QR 				 "
+			     + "   ON QR.CATEGORY_ID = C.CATEGORY_ID  "
+			     + " JOIN account A 						 "
+			     + "	  ON A.ACCOUNT_ID = QR.ACCOUNT_ID 	 "
+			     + " JOIN quiz Q 						 "
+			     + "	  ON Q.QUIZ_ID = QR.QUIZ_ID 	     "
+			     + " WHERE A.ACCOUNT_ID = :accountId      "
+			    + "	  AND Q.TITLE = 'ENTREPRENEURSHIP'   ", nativeQuery = true)
+	public String[] findCodCategory (Integer accountId);
+	
+	
+	
+	@Query(value = " SELECT COUNT(*) "
+				 + " FROM category   ", nativeQuery = true)
+	public Integer findCountCategory();
 	
 	
 	

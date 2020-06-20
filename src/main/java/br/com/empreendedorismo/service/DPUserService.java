@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import br.com.empreendedorismo.configuration.HibernateConfiguration;
+import br.com.empreendedorismo.configuration.ModelMapperSecurityConfiguration;
 import br.com.empreendedorismo.controller.AccountController;
 import br.com.empreendedorismo.dto.UserAccountDTO;
 import br.com.empreendedorismo.dto.DPUserDTO;
@@ -22,7 +23,7 @@ import br.com.empreendedorismo.respository.ProfileRespository;
 import br.com.empreendedorismo.utils.Constants;
 
 @Service
-public class DPUserService extends HibernateConfiguration {
+public class DPUserService  {
 
 	@Autowired
 	private DPUserRepository dpUserRepository;
@@ -78,7 +79,7 @@ public class DPUserService extends HibernateConfiguration {
 			profileList.add(profile);
             user.setProfile(profileList);
             user.setPassword(userAccountDTO.getPassword());
-			user.setCreationDate(new Date());
+            user.setCreationDate(new Date());
 			Account account = accountController.save(userAccountDTO.getEmail(),userAccountDTO.getZipCode(), userAccountDTO.getNeighborhood(), userAccountDTO.getCity(), userAccountDTO.getUf(), userAccountDTO.getDateOfBirth(), userAccountDTO.getPhone());
 			user.setAccount(account);
 			accountRepository.save(account);

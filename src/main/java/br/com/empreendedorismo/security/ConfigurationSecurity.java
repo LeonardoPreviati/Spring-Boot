@@ -54,7 +54,7 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter implemen
 		httpSecurity.authorizeRequests()
 		.antMatchers(HttpMethod.POST, Constants.AUTH, Constants.DP_USER).permitAll()
 		.antMatchers(HttpMethod.GET,  Constants.ACTUATOR).hasAuthority(Constants.DISCOVER_PROFILE)
-		.antMatchers(HttpMethod.GET,  Constants.QUIZ_RESULTS).hasAnyAuthority(Constants.USER, Constants.ADMIN)
+		.antMatchers(HttpMethod.GET,  Constants.QUIZ_RESULTS).hasAnyAuthority(Constants.USER, Constants.ADMIN, Constants.DISCOVER_PROFILE)
 		//above endpoints, can be accessed without authentication via token
 		.anyRequest().authenticated()
 		//to access the rest of the requests, you will need to be authenticated to the system
