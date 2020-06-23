@@ -10,6 +10,8 @@ import br.com.empreendedorismo.entity.DPUser;
 public interface DPUserRepository extends JpaRepository<DPUser, Integer>{
 	
 	public Optional<DPUser> findByEmail(String email);
+	
+	public DPUser findByEmailIgnoreCase(String email);
 
 	@Query(value = " SELECT COUNT(U.USER_ID)       "
 				 + " FROM dp_user U	       	       "

@@ -66,6 +66,9 @@ public class DPUser implements UserDetails {
 	@Column(name = "LAST_UPDATE_DATE")
 	private Date lastUpdateDate;
 	
+	@Column(name = "IS_ENABLED")
+	private boolean isEnabled;
+	
 	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -103,7 +106,7 @@ public class DPUser implements UserDetails {
 	@JsonIgnore
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return this.isEnabled;
 	}
 	public DPUser() {
 		super();

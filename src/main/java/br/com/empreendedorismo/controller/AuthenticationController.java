@@ -1,6 +1,8 @@
 package br.com.empreendedorismo.controller;
 
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import br.com.empreendedorismo.dto.LoginFormDTO;
 import br.com.empreendedorismo.dto.TokenDTO;
+import br.com.empreendedorismo.entity.DPUser;
+import br.com.empreendedorismo.respository.DPUserRepository;
 
 
 @RestController
@@ -32,12 +36,19 @@ public class AuthenticationController {
 	private TokenService tokenService;
 	
 	@Autowired
+	private DPUserRepository dpUserRepository;
+	
+	@Autowired
 	private DPUserController dpUserController;
+
+	private Optional<DPUser> findByEmail;
 	
 	@PostMapping
 	public ResponseEntity<TokenDTO> authentication(@RequestBody @Valid LoginFormDTO loginFormDTO){
 		UsernamePasswordAuthenticationToken dataLogin = loginFormDTO.convert();
 		try {
+			findByEmail = dpUserRepository.findByEmail(dataLogin.getName());
+			System.out.println(findByEmail.get());
 			Authentication authentication = authenticationManager.authenticate(dataLogin);
 			String token = tokenService.generateToken(authentication);
 			String name =  dpUserController.findUserNameByEmail(dataLogin.getName());

@@ -6,9 +6,16 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,13 +24,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import br.com.empreendedorismo.dto.UserAccountDTO;
 import br.com.empreendedorismo.dto.DPUserDTO;
+import br.com.empreendedorismo.entity.ConfirmationToken;
 import br.com.empreendedorismo.entity.DPUser;
+import br.com.empreendedorismo.respository.ConfirmationTokenRepository;
+import br.com.empreendedorismo.respository.DPUserRepository;
 import br.com.empreendedorismo.service.DPUserService;
+import br.com.empreendedorismo.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -37,6 +50,13 @@ public class DPUserController {
 	
 	@Autowired
 	private DPUserService dpUserService;
+	
+	@Autowired
+	private DPUserRepository dpUserRepository;
+
+	
+	@Autowired
+    private ConfirmationTokenRepository confirmationTokenRepository;
 	
 	/**
 	 * @return all users
@@ -161,4 +181,17 @@ public class DPUserController {
 			throw e;
 		}
 	}
+	
+	@RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
+    public String confirmUserAccount(@RequestParam("token")String confirmationToken)
+    {
+		ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+        if(token != null) {
+        	DPUser user = dpUserRepository.findByEmailIgnoreCase(token.getUser().getEmail());
+            user.setEnabled(true);
+            dpUserRepository.save(user);
+        }return "Conta registrada com sucesso";
+        
+        
+    }
 }

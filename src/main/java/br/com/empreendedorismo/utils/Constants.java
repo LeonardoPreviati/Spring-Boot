@@ -6,8 +6,11 @@ public class Constants {
 	public static final String INFO_USER = "User ";
 	public static final String INFO_LOGIN = ", logged into the system.";
 	public static final String HELLO_MSG = "Olá ";
+	public static final String LINK_ACTIVE = "http://localhost:8080/dpUser/confirm-account?token=";
+	public static final String MSG_ACTIVE = "\n\nClique no link para ativar a sua conta: ";
 	public static final String BODY_MSG = ",\n\nEsta é uma notificação para confirmar seu login efetuado com sucesso "
  		   + "na Discover Profile.\n\nAtenciosamente,\nEquipe Discover Profile";
+	public static final String SUBJECT_ACTIVE = "Discover Profile: Ativação da conta";
 	public static final String SUBJECT = "Discover Profile: Login Realizado";
 	public static final String EMAIL_FROM = "discover.profile@gmail.com";
 	public static final String PASSWORD_DISCOVER_PROFILE = "DiscoProfileVoador#300";

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.SimpleEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +19,11 @@ import br.com.empreendedorismo.controller.AccountController;
 import br.com.empreendedorismo.dto.UserAccountDTO;
 import br.com.empreendedorismo.dto.DPUserDTO;
 import br.com.empreendedorismo.entity.Account;
+import br.com.empreendedorismo.entity.ConfirmationToken;
 import br.com.empreendedorismo.entity.DPUser;
 import br.com.empreendedorismo.entity.Profile;
 import br.com.empreendedorismo.respository.AccountRepository;
+import br.com.empreendedorismo.respository.ConfirmationTokenRepository;
 import br.com.empreendedorismo.respository.DPUserRepository;
 import br.com.empreendedorismo.respository.ProfileRespository;
 import br.com.empreendedorismo.utils.Constants;
@@ -33,6 +39,9 @@ public class DPUserService  {
 	
 	@Autowired
 	private ProfileRespository profileRepository;
+	
+	@Autowired
+    private ConfirmationTokenRepository confirmationTokenRepository;
 
 	@Autowired
 	private AccountController accountController;
@@ -84,6 +93,21 @@ public class DPUserService  {
 			user.setAccount(account);
 			accountRepository.save(account);
 			dpUserRepository.save(user);
+			
+			ConfirmationToken confirmationToken = new ConfirmationToken();
+			confirmationToken.setUser(user);
+			confirmationTokenRepository.save(confirmationToken);
+            
+            Email email = new SimpleEmail();
+            email.setHostName(Constants.EMAIL_SERVER_HOSTNAME);
+            email.setSmtpPort(Constants.SMPT_PORT);
+            email.setAuthenticator(new DefaultAuthenticator(Constants.EMAIL_FROM, Constants.PASSWORD_DISCOVER_PROFILE));
+            email.setSSLOnConnect(true);
+            email.setFrom(Constants.EMAIL_FROM);
+            email.setSubject(Constants.SUBJECT_ACTIVE);
+            email.setMsg(Constants.HELLO_MSG + user.getName() + Constants.MSG_ACTIVE + Constants.LINK_ACTIVE + confirmationToken.getConfirmationToken());
+            email.addTo(user.getEmail());
+            email.send();
 			return user;
 		} catch (Exception e) {
 			e.printStackTrace();
