@@ -1,7 +1,5 @@
 package br.com.empreendedorismo.security;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import br.com.empreendedorismo.entity.DPUser;
 import br.com.empreendedorismo.respository.DPUserRepository;
 import br.com.empreendedorismo.service.TokenService;
-import br.com.empreendedorismo.utils.Constants;
+import br.com.empreendedorismo.util.ConstantsUtil;
 
 @EnableWebSecurity
 @Configuration
@@ -52,9 +48,9 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter implemen
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.authorizeRequests()
-		.antMatchers(HttpMethod.POST, Constants.AUTH, Constants.DP_USER).permitAll()
-		.antMatchers(HttpMethod.GET,  Constants.ACTUATOR).hasAuthority(Constants.DISCOVER_PROFILE)
-		.antMatchers(HttpMethod.GET,  Constants.QUIZ_RESULTS).permitAll()//hasAnyAuthority(Constants.USER, Constants.ADMIN, Constants.DISCOVER_PROFILE)
+		.antMatchers(HttpMethod.POST, ConstantsUtil.AUTH, ConstantsUtil.DP_USER).permitAll()
+		.antMatchers(HttpMethod.GET,  ConstantsUtil.ACTUATOR).hasAuthority(ConstantsUtil.DISCOVER_PROFILE)
+		.antMatchers(HttpMethod.GET,  ConstantsUtil.QUIZ_RESULTS).permitAll()//hasAnyAuthority(Constants.USER, Constants.ADMIN, Constants.DISCOVER_PROFILE)
 		.antMatchers("/dpUser/confirm-account").permitAll()
         .antMatchers("/confirm").permitAll()
         .antMatchers("/confirm-account").permitAll()
@@ -80,9 +76,9 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter implemen
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
 		//spring automatically considers any prefixes present in the application
-		.allowedOrigins(Constants.ALLOWED_ORIGINS_HOSTNAME)
+		.allowedOrigins(ConstantsUtil.ALLOWED_ORIGINS_HOSTNAME)
 		//origin allowed (host of front)
-		.allowedMethods(Constants.GET, Constants.POST, Constants.PUT, Constants.DELETE);
+		.allowedMethods(ConstantsUtil.GET, ConstantsUtil.POST, ConstantsUtil.PUT, ConstantsUtil.DELETE);
 		//type of request allowed
 		
 		

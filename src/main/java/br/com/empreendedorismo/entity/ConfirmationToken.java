@@ -24,8 +24,8 @@ public class ConfirmationToken {
     @Column(name="TOKEN_ID")
     private long tokenId;
 
-    @Column(name="CONFIRMATON_TOKEN")
-    private String confirmationToken;
+    @Column(name="TOKEN")
+    private String token;
 
     @Column(name = "CREATION_DATE")
     private Date creationDate;
@@ -35,8 +35,8 @@ public class ConfirmationToken {
     private DPUser user;
     
     public ConfirmationToken() {
-        creationDate = new Date();
-        confirmationToken = UUID.randomUUID().toString();
+        this.creationDate = new Date();
+        this.token = UUID.randomUUID().toString();
     }
 
     

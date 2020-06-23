@@ -1,22 +1,13 @@
 package br.com.empreendedorismo.service;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import br.com.empreendedorismo.dto.AccountDTO;
-import br.com.empreendedorismo.dto.CategoryDTO;
-import br.com.empreendedorismo.dto.QuestDTO;
-import br.com.empreendedorismo.entity.Account;
 import br.com.empreendedorismo.entity.Category;
 import br.com.empreendedorismo.entity.Quest;
 import br.com.empreendedorismo.entity.Quiz;

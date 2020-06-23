@@ -2,61 +2,34 @@ package br.com.empreendedorismo.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-
-import org.apache.commons.mail.DefaultAuthenticator;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
-
 import br.com.empreendedorismo.dto.UserAccountDTO;
 import br.com.empreendedorismo.dto.DPUserDTO;
-import br.com.empreendedorismo.entity.ConfirmationToken;
 import br.com.empreendedorismo.entity.DPUser;
-import br.com.empreendedorismo.respository.ConfirmationTokenRepository;
-import br.com.empreendedorismo.respository.DPUserRepository;
 import br.com.empreendedorismo.service.DPUserService;
-import br.com.empreendedorismo.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
-@RequestMapping("/dpUser")
-@Slf4j
 /**
  * @author - Leonardo A. Previati
  * @version - 1.0		
  */
+@RestController
+@RequestMapping("/dpUser")
+@Slf4j
 public class DPUserController {
 	
 	@Autowired
 	private DPUserService dpUserService;
-	
-	@Autowired
-	private DPUserRepository dpUserRepository;
-
-	
-	@Autowired
-    private ConfirmationTokenRepository confirmationTokenRepository;
 	
 	/**
 	 * @return all users
@@ -173,25 +146,38 @@ public class DPUserController {
 	 * @return name for a specific user by email
 	 */
 	public String findUserNameByEmail(String email) {
+		long startTime = System.currentTimeMillis();
+		log.info("DPUserController.findUserNameByEmail(String email) - BEGIN");
+		String returnEmail = null;
 		try {
-			String returnEmail = dpUserService.findUserNameByEmail(email);
-			return returnEmail;
+			returnEmail = dpUserService.findUserNameByEmail(email);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
+		long endTime = System.currentTimeMillis() - startTime;
+		log.info("DPUserController.findUserNameByEmail(String email) - END (" + endTime + "ms)");
+		return returnEmail;
 	}
 	
+	/**
+	 * 
+	 * @param confirmationToken - generate token to activate the account
+	 * @return user account activation confirmation response
+	 */
 	@RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
-    public String confirmUserAccount(@RequestParam("token")String confirmationToken)
-    {
-		ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
-        if(token != null) {
-        	DPUser user = dpUserRepository.findByEmailIgnoreCase(token.getUser().getEmail());
-            user.setEnabled(true);
-            dpUserRepository.save(user);
-        }return "Conta registrada com sucesso";
-        
-        
-    }
+    public String confirmUserAccount(@RequestParam("token")String confirmationToken){
+		long startTime = System.currentTimeMillis();
+		log.info("DPUserController.confirmUserAccount(@RequestParam('token')String confirmationToken) - BEGIN");
+		String responseConfirm = null;
+		try {
+			responseConfirm = dpUserService.confirmUserAccont(confirmationToken);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		long endTime = System.currentTimeMillis() - startTime;
+		log.info("DPUserController.confirmUserAccount(@RequestParam('token')String confirmationToken) - END (" + endTime + "ms)");
+		return responseConfirm;
+	}
 }

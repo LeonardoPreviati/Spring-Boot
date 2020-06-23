@@ -4,17 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.commons.mail.DefaultAuthenticator;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.SimpleEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import br.com.empreendedorismo.configuration.HibernateConfiguration;
-import br.com.empreendedorismo.configuration.ModelMapperSecurityConfiguration;
 import br.com.empreendedorismo.controller.AccountController;
 import br.com.empreendedorismo.dto.UserAccountDTO;
 import br.com.empreendedorismo.dto.DPUserDTO;
@@ -26,7 +20,8 @@ import br.com.empreendedorismo.respository.AccountRepository;
 import br.com.empreendedorismo.respository.ConfirmationTokenRepository;
 import br.com.empreendedorismo.respository.DPUserRepository;
 import br.com.empreendedorismo.respository.ProfileRespository;
-import br.com.empreendedorismo.utils.Constants;
+import br.com.empreendedorismo.util.ConstantsUtil;
+import br.com.empreendedorismo.util.EmailUtil;
 
 @Service
 public class DPUserService  {
@@ -74,17 +69,10 @@ public class DPUserService  {
 	public DPUser save(UserAccountDTO userAccountDTO) throws Exception {
 		try {
 			DPUser user = new DPUser();
-			Profile profile;
 			List<Profile> profileList = new ArrayList<Profile>();
 			user.setName(userAccountDTO.getName());
 			user.setEmail(userAccountDTO.getEmail());
-			if (userAccountDTO.getPassword().equals(Constants.PASSWORD_DISCOVER_PROFILE_ENCODE)) {
-				profile = profileRepository.findProfileByName(Constants.DISCOVER_PROFILE);
-			}else if (userAccountDTO.getPassword().equals(Constants.PASSWORD_ADMIN_ENCODE)) {
-				profile = profileRepository.findProfileByName(Constants.ADMIN);
-			}else {
-				profile = profileRepository.findProfileByName(Constants.USER);
-			}
+			Profile profile = saveProfile(userAccountDTO);
 			profileList.add(profile);
             user.setProfile(profileList);
             user.setPassword(userAccountDTO.getPassword());
@@ -93,22 +81,28 @@ public class DPUserService  {
 			user.setAccount(account);
 			accountRepository.save(account);
 			dpUserRepository.save(user);
-			
 			ConfirmationToken confirmationToken = new ConfirmationToken();
 			confirmationToken.setUser(user);
 			confirmationTokenRepository.save(confirmationToken);
-            
-            Email email = new SimpleEmail();
-            email.setHostName(Constants.EMAIL_SERVER_HOSTNAME);
-            email.setSmtpPort(Constants.SMPT_PORT);
-            email.setAuthenticator(new DefaultAuthenticator(Constants.EMAIL_FROM, Constants.PASSWORD_DISCOVER_PROFILE));
-            email.setSSLOnConnect(true);
-            email.setFrom(Constants.EMAIL_FROM);
-            email.setSubject(Constants.SUBJECT_ACTIVE);
-            email.setMsg(Constants.HELLO_MSG + user.getName() + Constants.MSG_ACTIVE + Constants.LINK_ACTIVE + confirmationToken.getConfirmationToken());
-            email.addTo(user.getEmail());
-            email.send();
+            EmailUtil activeAccount = new EmailUtil();
+			activeAccount.sendEmail(user, confirmationToken.getToken().toString());
 			return user;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	public Profile saveProfile(UserAccountDTO userAccountDTO) {
+		Profile profile;
+		try {
+			if (userAccountDTO.getPassword().equals(ConstantsUtil.PASSWORD_DISCOVER_PROFILE_ENCODE)) {
+				profile = profileRepository.findProfileByName(ConstantsUtil.DISCOVER_PROFILE);
+			}else if (userAccountDTO.getPassword().equals(ConstantsUtil.PASSWORD_ADMIN_ENCODE)) {
+				profile = profileRepository.findProfileByName(ConstantsUtil.ADMIN);
+			}else {
+				profile = profileRepository.findProfileByName(ConstantsUtil.USER);
+			}return profile;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -180,6 +174,24 @@ public class DPUserService  {
 		try {
 			String returnEmail = dpUserRepository.findUserNameByEmailQuery(email);
 			return returnEmail;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	public String confirmUserAccont(String confirmationToken) {
+		ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+		String ret = "Link de cadastrado inválido ou já utilizado";
+		try {
+			 if(token != null) {
+	        	DPUser user = dpUserRepository.findByEmailIgnoreCase(token.getUser().getEmail());
+	            user.setEnabled(true);
+	            dpUserRepository.save(user);
+	            if (user.isEnabled()) {
+	            	ret = ConstantsUtil.USER_ACCOUNT_REGISTERED;
+	            }
+			 }return ret;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

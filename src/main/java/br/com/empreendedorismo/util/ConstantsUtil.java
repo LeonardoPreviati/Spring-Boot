@@ -1,8 +1,11 @@
-package br.com.empreendedorismo.utils;
+package br.com.empreendedorismo.util;
 
-public class Constants {
+public class ConstantsUtil {
 	
 	//Configuration parameters for send email
+	public static final String USER_ACCOUNT_ALREADY_REGISTERED = "A conta já foi registrada";
+	public static final String USER_ACCOUNT_NOT_REGISTERED = "Não foi registrar a sua conta :(. Contate o administrador do sistema, para mais informações";
+	public static final String USER_ACCOUNT_REGISTERED = "Conta registrada com sucesso";
 	public static final String INFO_USER = "User ";
 	public static final String INFO_LOGIN = ", logged into the system.";
 	public static final String HELLO_MSG = "Olá ";

@@ -6,6 +6,6 @@ import br.com.empreendedorismo.entity.ConfirmationToken;
 
 public interface ConfirmationTokenRepository extends CrudRepository<ConfirmationToken, String> {
     
-	@Query(value = " SELECT * FROM confirmation_token ct where ct.confirmaton_token = :confirmationToken ", nativeQuery = true)
-	public ConfirmationToken findByConfirmationToken(String confirmationToken);
+	@Query(value = " SELECT * FROM confirmation_token ct where ct.token = :token ", nativeQuery = true)
+	public ConfirmationToken findByConfirmationToken(String token);
 }

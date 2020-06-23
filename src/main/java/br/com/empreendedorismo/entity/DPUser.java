@@ -1,16 +1,10 @@
 package br.com.empreendedorismo.entity;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,9 +18,7 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 @Entity
@@ -117,8 +109,8 @@ public class DPUser implements UserDetails {
 		this.name = name;
 		this.email = email;
 		this.password = password;
-		this.creationDate = creationDate == null ? new Date(creationDate.getTime()) : creationDate;
-		this.lastUpdateDate = lastUpdateDate == null ? new Date(lastUpdateDate.getTime()) : lastUpdateDate;
+		this.creationDate = creationDate == null ? new Date(this.creationDate.getTime()) : creationDate;
+		this.lastUpdateDate = lastUpdateDate == null ? new Date(this.lastUpdateDate.getTime()) : lastUpdateDate;
 		
 	}
 
@@ -151,6 +143,8 @@ public class DPUser implements UserDetails {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		if (isEnabled != other.isEnabled)
+			return false;
 		if (lastUpdateDate == null) {
 			if (other.lastUpdateDate != null)
 				return false;
@@ -182,12 +176,15 @@ public class DPUser implements UserDetails {
 		result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + (isEnabled ? 1231 : 1237);
 		result = prime * result + ((lastUpdateDate == null) ? 0 : lastUpdateDate.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((profile == null) ? 0 : profile.hashCode());
 		return result;
 	}
+
+	
 }
 
 

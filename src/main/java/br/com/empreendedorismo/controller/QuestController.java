@@ -115,7 +115,6 @@ public class QuestController {
 		log.info("QuestController.update(@PathVariable Integer questId, @RequestBody @Valid QuestDTO questDTO) - BEGIN");
 		ResponseEntity<Quest> questResponse = null;
 		Optional<Quest> accountModified = questRepository.findById(questId);
-		Quest quest;
 		try {
 			if (accountModified.isPresent()) {
 				questService.update(questId, description);
